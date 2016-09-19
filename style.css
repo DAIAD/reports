@@ -1,0 +1,263 @@
+/* Fonts */
+@font-face {
+    font-family: "OpenSansCondensed";
+    src: 
+         local('Open Sans'),
+         local('OpenSans-CondLight'),
+         url("./fonts/OpenSans-CondLight.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "OpenSansCondensed";
+    src: 
+         local('Open Sans'),
+         local('OpenSans-CondBold'),
+         url("./fonts/OpenSans-CondBold.ttf");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Simplifica";
+    src: local('Simplifica'),
+         url("./fonts/Simplifica.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+	//background: #E8F5FD;
+  font-family: "OpenSansCondensed", Arial, sans-serif;
+	background: #FFF;
+  padding: 20px;
+  font-size: 0.7em;
+  color: #424242;
+  line-height: 1.7;
+  margin: 0;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Simplifica";
+  color: #424242;
+  font-weight: bold;
+  letter-spacing: 0.025em;
+  margin: 0 0 5px;
+  padding: 0;
+}
+
+h1 {
+  font-size: 3.5em;
+  font-weight: bold;
+  margin: 0 0 15px;
+  padding: 0;
+}
+
+h2 {
+  font-size: 3em;
+}
+
+h3 {
+  font-size: 2.0em;
+}
+
+h4 {
+  font-size: 1.5em;
+}
+
+h5 {
+  font-size: 1.3em;
+}
+
+h6 {
+  font-size: 1.15em;
+}
+
+p {
+  margin: 10px 0;
+}
+
+ul {
+  padding-left: 30px;
+}
+
+.pull-left{
+	float: left;
+}
+.pull-right{
+	float: right;
+}
+.padded{ 
+  padding: 15px;
+}
+.hidden{
+	display: none;
+}
+
+.list-unstyled{
+  padding: 0;
+	list-style: none;
+  line-height: 1.2em;
+}
+
+.preloader {
+	display: block;
+	position: absolute;
+	top: 35vh;
+	left: 50vw;
+	width: 80px;
+	height: 80px;
+  z-index: 100;
+	animation: counter-spin 0.8s linear infinite;
+}
+
+.preloader-inner {
+	display: block;
+	position: absolute;
+	top: 35vh;
+	left: 50vw;
+	width: 80px;
+	height: 80px;
+  z-index: 100;
+	animation: spin 0.8s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+@-moz-keyframes counter-spin { 100% { -moz-transform: rotate(-360deg); } }
+@-webkit-keyframes counter-spin { 100% { -webkit-transform: rotate(-360deg); } }
+@keyframes counter-spin { 100% { -webkit-transform: rotate(-360deg); transform:rotate(-360deg); } }
+
+.error-display {
+  position: absolute;
+  margin-left: 30%;
+  margin-top: 40vh;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding:50px;
+  z-index: 2000;
+}
+.error-display-x {
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  color: #fff;
+  font-size: 1.5em;
+  font-weight: normal;
+}
+
+/* React Components */
+.mixin {
+	width: 100%;
+	height: 100%;
+}
+
+.report-header {
+
+}
+
+.report-header-right {
+  float:right;
+  width: 40%;
+  text-align: center;
+}
+
+.report-header-left {
+  width: 60%;
+}
+
+.report-logo {
+  max-height: 100px;
+  max-width: 180px;
+}
+
+.report-text {
+  margin-top: 20px;
+  line-height: 1.0em;
+}
+
+.report-body {
+  overflow: auto;
+}
+.report-widgets {
+}
+
+.report-footer {
+  width: 100%;
+  border-top: 1px #666 solid;
+}
+.report-title { 
+  text-align: right;
+}
+
+.report-subtitle {
+}
+ 
+.report-info {
+  margin-top: 20px;
+}
+
+
+.widget {
+
+}
+
+.infobox {
+  display: block;
+  float: left;
+  width: 40%; 
+  overflow: hidden;
+  font-size: 0.9em;
+  height: 150px;
+  margin: 10px 20px;
+  border: 1px #2D3580 solid;
+}
+.infobox-header {
+  display: block;
+  padding: 5px 10px 0px 10px;
+  overflow: auto;
+  border-bottom: 1px #2D3580 solid;
+}
+
+.infobox-body {
+  display: block;
+  overflow: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.infobox-body-left {
+  float: left; 
+  width: 50%;
+  height: 90px;
+  padding-left: 10px;
+}
+
+.infobox-body-right {
+  float: left;
+  width: 40%;
+  height: 90px;
+  padding-left: 10px;
+}
+
+.infobox-body-full {
+  width: 90%;
+  height: 110px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+
+.infobox-body span {
+  //font-size: 1.02em;
+}
+.infobox-body p {
+  //margin: 0;
+}
+
+.infobox-error {
+  font-size: 1.1em;
+}
+

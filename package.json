@@ -1,0 +1,99 @@
+{
+  "name": "daiad-pdf-reports",
+  "version": "0.0.1",
+  "description": "A universal JS application that produces user water consumption reports with the ability to render to PDF files on the backend",
+  "dependencies": {
+    "babel-cli": "^6.0.0",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-plugin-transform-runtime": "~6.7.5",
+    "babel-polyfill": "~6.7.4",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-register": "^6.14.0",
+    "body-parser": "^1.15.2",
+    "echarts": "^3.0.0",
+    "es6-promise": "~3.1.2",
+    "express": "^4.14.0",
+    "intl": "1.2.4",
+    "isomorphic-fetch": "2.2.1",
+    "jsx-loader": "~0.13.2",
+    "keymirror": "^0.1.1",
+    "lodash": "^4.15.0",
+    "moment": "^2.14.1",
+    "npm": "~3.8.6",
+    "phantomjs": "^2.1.7",
+    "react": "~15.0.0",
+    "react-addons-pure-render-mixin": "~15.0.1",
+    "react-dom": "~15.0.1",
+    "react-intl": "2.1.3",
+    "react-redux": "~4.4.4",
+    "redux": "~3.4.0",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0",
+    "validator": "^5.7.0",
+    "webpack": "~1.12.14"
+  },
+  "devDependencies": {
+    "babel-core": "~6.7.6",
+    "babel-loader": "~6.2.4",
+    "babel-plugin-transform-object-rest-spread": "~6.6.5",
+    "babel-preset-react": "~6.5.0",
+    "better-npm-run": "0.0.11",
+    "concurrently": "^2.2.0",
+    "css-loader": "~0.18.0",
+    "file-loader": "~0.8.5",
+    "install": "^0.8.1",
+    "react-hot-loader": "~1.3.0",
+    "style-loader": "~0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack-dev-server": "~1.14.1"
+  },
+  "config": {
+    "hotLoadHost": "localhost",
+    "hotLoadPort": 8089,
+    "nodeHost": "localhost",
+    "nodePort": 3000
+  },
+  "scripts": {
+    "dev": "concurrently --kill-others \"better-npm-run build-dev\" \"better-npm-run start-hotserver-dev\" \"better-npm-run start-server-dev\"",
+    "prod": "concurrently --kill-others \"better-npm-run build-prod\" \"better-npm-run start-server\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "betterScripts": {
+    "build-dev": {
+      "command": "webpack --config webpack.config.dev.js"
+    },
+    "start-hotserver-dev": {
+      "command": "HOT_LOAD_HOST=$npm_package_config_hotLoadHost HOT_LOAD_PORT=$npm_package_config_hotLoadPort node hotLoadServer.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "start-server-dev": {
+      "command": "HOT_LOAD_HOST=$npm_package_config_hotLoadHost NODE_HOST=$npm_package_config_nodeHost NODE_PORT=$npm_package_config_nodePort HOT_LOAD_PORT=$npm_package_config_hotLoadPort babel-node src/server.js",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "build-server": {
+      "command": "webpack --config webpack.config.server.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "build-prod": {
+      "command": "webpack --config webpack.config.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "start-server": {
+      "command": "NODE_HOST=$npm_package_config_nodeHost NODE_PORT=$npm_package_config_nodePort babel-node src/server.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "author": "Stelios Manousopoulos",
+  "private": true,
+  "license": "BSD-2-Clause"
+}
