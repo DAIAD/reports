@@ -10,15 +10,16 @@ import { addLocaleData } from 'react-intl';
 
 import enLocaleData from 'react-intl/locale-data/en';
 import elLocaleData from 'react-intl/locale-data/el';
-//import esLocaleData from 'react-intl/locale-data/es';
+import esLocaleData from 'react-intl/locale-data/es';
 //import deLocaleData from 'react-intl/locale-data/de';
 
 addLocaleData(enLocaleData);
 addLocaleData(elLocaleData);
-//addLocaleData(esLocaleData);
+addLocaleData(esLocaleData);
 //addLocaleData(deLocaleData);
 
 import enMessages from '../i18n/en';
+import esMessages from '../i18n/es';
 import elMessages from '../i18n/el';
 
 export const doNothing = function() {
@@ -101,6 +102,10 @@ const changeLocale = function(locale) {
           dispatch(setI18nMessages(require('../i18n/el')));
           });
           */
+        
+        case 'es': 
+          dispatch(setI18nMessages(flattenMessages(esMessages)));
+          break;
 
       default:
         break;
