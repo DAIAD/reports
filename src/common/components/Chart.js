@@ -106,7 +106,7 @@ var Chart = React.createClass({
   _replaceWithImage: function(options) {
 
     const img = document.createElement("img");
-    const src = this._chart.getDataURL(options || {type: 'png', pixelRatio: 3, backgroundColor: '#fff'});
+    const src = this._chart.getDataURL(options || {type: 'png', pixelRatio: 5, backgroundColor: '#fff'});
 
     const parent = document.getElementById(this.getId()).parentNode; 
     parent.removeChild(parent.childNodes[0]);

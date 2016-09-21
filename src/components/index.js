@@ -88,7 +88,7 @@ function ChartBox (props) {
                 {
                   (() => (type === 'forecast') ?
                     <span>We estimate that you will consume 24% less in 2016! Keep up the good work!</span>
-                    : ((type === 'forecast') ?
+                    : ((type === 'comparison') ?
                        <span>You rank better than your neighbors by 23%, but you are still worse than your city average by 11%!</span>
                        : 
                        <span>Your biggest water consumption was detected in the shower!</span> )
@@ -105,9 +105,11 @@ function ChartBox (props) {
                   title=''
                   subtitle=""
                   type='line'
+                  xMargin={60}
+                  x2Margin={10}
                   yMargin={10}
-                  y2Margin={40}
-                  fontSize={5}
+                  y2Margin={20}
+                  fontSize={8}
                   mu={mu}
                   formatter={chartFormatter}
                   invertAxis={invertAxis}
@@ -194,7 +196,7 @@ export default function ReportTemplate (props) {
  
   const fromDisplay = <b><FormattedMessage id={`weekdays.${fromDate.getDay()}`}/>, <span>{fromDate.getDate()}/{fromDate.getMonth()+1}/{fromDate.getFullYear()}</span></b>;
   const toDisplay = <b><FormattedMessage id={`weekdays.${toDate.getDay()}`}/>, <span>{toDate.getDate()}/{toDate.getMonth()+1}/{toDate.getFullYear()}</span></b>;
-  
+
   return (
     <div className='report'>
       <div className='report-header'>
@@ -210,11 +212,11 @@ export default function ReportTemplate (props) {
         <div className='report-header-left'>
           <img className='report-logo' src={`/dist/${logo}`}/>
           <div className='report-info'>
-            <ul className='list-unstyled'>
-              <li><h6><FormattedMessage id='profile.name' /> {firstname} {lastname}</h6></li>
-              <li><h6><FormattedMessage id='profile.username' /> {username}</h6></li>
-              <li><h6><FormattedMessage id='profile.address' /> {address}</h6></li>
-              <li><h6><FormattedMessage id='devices.serial' />: {meter}</h6></li>
+            <ul className='list-unstyled report-info-list'>
+              <li><h6><FormattedMessage id='profile.name' />: <span className='report-info-item-value'>{firstname} {lastname}</span></h6></li>
+            <li><h6><FormattedMessage id='profile.username' />: <span className='report-info-item-value'>{username}</span></h6></li>
+            <li><h6><FormattedMessage id='profile.address' />: <span className='report-info-item-value'>{address}</span></h6></li>
+            <li><h6><FormattedMessage id='devices.serial' />: <span className='report-info-item-value'>{meter}</span></h6></li>
             </ul>
           </div>
         </div>

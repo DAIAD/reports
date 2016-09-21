@@ -143,7 +143,7 @@ export default {
     "properties": "Properties",
     "model": "Model",
     "manufacturer": "Manufacturer",
-    "serial": "Serial"
+    "serial": "SWM id"
   },
   "report": {
     "title": "Monthly water report",

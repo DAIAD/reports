@@ -43,9 +43,6 @@ function validateInput(options) {
   if (!validator.isIn(locale, ['en', 'el', 'es'])) {
     throw 'locale must be one of en, el, es';
   }
-  if (!validator.isEmail(username)) {
-    throw 'username not valid';
-  }
   if (!validator.isISO8601(from)) {
     throw 'from date must be a valid ISO-8601 date (YYYYMMDD)';
   }

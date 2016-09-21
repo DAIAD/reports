@@ -1,8 +1,7 @@
 /* Fonts */
 @font-face {
     font-family: "OpenSansCondensed";
-    src: 
-         local('Open Sans'),
+    src: local('Open Sans'),
          local('OpenSans-CondLight'),
          url("./fonts/OpenSans-CondLight.ttf");
     font-weight: normal;
@@ -10,12 +9,10 @@
 }
 
 @font-face {
-    font-family: "OpenSansCondensed";
-    src: 
-         local('Open Sans'),
-         local('OpenSans-CondBold'),
+    font-family: "OpenSansCondensedBold";
+    src: local('Open Sans Condensed'),
          url("./fonts/OpenSans-CondBold.ttf");
-    font-weight: bold;
+    font-weight: normal;
     font-style: normal;
 }
 
@@ -32,9 +29,10 @@ body {
   font-family: "OpenSansCondensed", Arial, sans-serif;
 	background: #FFF;
   padding: 20px;
-  font-size: 0.7em;
+  font-size: 0.65em;
   color: #424242;
   line-height: 1.7;
+  letter-spacing: 0.002em;
   margin: 0;
 }
 
@@ -42,8 +40,8 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: "Simplifica";
   color: #424242;
-  font-weight: bold;
   letter-spacing: 0.025em;
+  font-weight: normal;
   margin: 0 0 5px;
   padding: 0;
 }
@@ -76,11 +74,16 @@ h6 {
 }
 
 p {
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 ul {
   padding-left: 30px;
+}
+
+b {
+  font-family: "OpenSansCondensedBold", Arial, sans-serif;
+  font-weight: bold;
 }
 
 .pull-left{
@@ -170,13 +173,13 @@ ul {
 }
 
 .report-logo {
-  max-height: 100px;
+  max-height: 40px;
   max-width: 180px;
 }
 
 .report-text {
   margin-top: 20px;
-  line-height: 1.0em;
+  line-height: 1.2em;
 }
 
 .report-body {
@@ -197,11 +200,17 @@ ul {
 }
  
 .report-info {
-  margin-top: 20px;
+  margin-top: 10px;
+}
+.report-info-list {
+  width: 70%;
+}
+.report-info-item-value {
+  float: right;
 }
 
-
 .widget {
+
 
 }
 
