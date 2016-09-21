@@ -48,18 +48,18 @@
     "webpack-dev-server": "~1.14.1"
   },
   "config": {
-    "hotLoadHost": "localhost",
+    "hotLoadHost": "192.168.10.113",
     "hotLoadPort": 8089,
-    "nodeHost": "localhost",
+    "nodeHost": "192.168.10.113",
     "nodePort": 3000
   },
   "scripts": {
-    "dev": "concurrently --kill-others \"better-npm-run build-dev\" \"better-npm-run start-hotserver-dev\" \"better-npm-run start-server-dev\"",
-    "prod": "concurrently --kill-others \"better-npm-run build-prod\" \"better-npm-run start-server\"",
+    "dev": "concurrently --kill-others \"better-npm-run build-client-dev\" \"better-npm-run start-hotserver-dev\" \"better-npm-run start-server-dev\"",
+    "prod": "better-npm-run build-client-prod && better-npm-run build-server-prod && better-npm-run start-server-prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "betterScripts": {
-    "build-dev": {
+    "build-client-dev": {
       "command": "webpack --config webpack.config.dev.js"
     },
     "start-hotserver-dev": {
@@ -74,20 +74,17 @@
         "NODE_ENV": "development"
       }
     },
-    "build-server": {
-      "command": "webpack --config webpack.config.server.js",
-      "env": {
-        "NODE_ENV": "production"
-      }
+    "build-server-prod": {
+      "command": "babel -d dist/server/ src/ -s"
     },
-    "build-prod": {
+    "build-client-prod": {
       "command": "webpack --config webpack.config.js",
       "env": {
         "NODE_ENV": "production"
       }
     },
-    "start-server": {
-      "command": "NODE_HOST=$npm_package_config_nodeHost NODE_PORT=$npm_package_config_nodePort babel-node src/server.js",
+    "start-server-prod": {
+      "command": "NODE_HOST=$npm_package_config_nodeHost NODE_PORT=$npm_package_config_nodePort node dist/server/server.js",
       "env": {
         "NODE_ENV": "production"
       }

@@ -58,7 +58,7 @@ module.exports = {
   ],
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist",
-    publicPath: 'http://' + HOST + ':' + HOTLOADPORT + '/dist/'
+    path: __dirname + "/dist/client/",
+    publicPath: 'http://' + HOST + ':' + HOTLOADPORT + '/dist/client/'
   },
 }
