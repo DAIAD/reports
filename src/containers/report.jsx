@@ -31,7 +31,7 @@ const mapStateToProps = (state, ownProps)  => ({
   address: state.profile.address,
   devices: state.profile.devices,
   utility: state.profile.utility.name,
-  logo: state.profile.utility.logo || 'logo.jpg',
+  logo: state.profile.utility.logo || 'logo.png',
   url: state.profile.utility.url || 'www.daiad.eu',
   from: moment(state.fromDate, 'YYYYMMDD').valueOf(),
   to: moment(state.toDate, 'YYYYMMDD').valueOf(),
