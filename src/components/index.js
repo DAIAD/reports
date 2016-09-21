@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { PUBLIC_PATH } from '../constants';
 import Chart from './../common/components/Chart';
 import { injectIntl, FormattedMessage, FormattedDate } from 'react-intl';
 
@@ -210,7 +211,7 @@ export default function ReportTemplate (props) {
         </div>
         <br/>
         <div className='report-header-left'>
-          <img className='report-logo' src={`/dist/${logo}`}/>
+          <img className='report-logo' src={`${PUBLIC_PATH}/${logo}`}/>
           <div className='report-info'>
             <ul className='list-unstyled report-info-list'>
               <li><h6><FormattedMessage id='profile.name' />: <span className='report-info-item-value'>{firstname} {lastname}</span></h6></li>

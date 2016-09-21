@@ -8,9 +8,9 @@ import { renderToString } from 'react-dom/server';
 import bodyParser from 'body-parser';
 import moment from 'moment';
 import validator from 'validator';
-import devConfig from '../webpack.config.dev';
-import prodConfig from '../webpack.config';
 
+
+import { PUBLIC_PATH } from './constants';
 import { init } from './actions';
 import myApp from './reducers';
 import App from './containers';
@@ -19,13 +19,15 @@ const app = Express();
 
 const PORT = process.env.NODE_PORT || 3000;
 const HOST = process.env.NODE_HOST || 'localhost';
+const HOTLOADHOST = process.env.HOT_LOAD_HOST;
+const HOTLOADPORT = process.env.HOT_LOAD_PORT;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 if (NODE_ENV === 'development') {
-  var SCRIPT = `<script src="${devConfig.output.publicPath}${devConfig.output.filename}"></script>`;
+  var SCRIPT = `<script src="http://${HOTLOADHOST}:${HOTLOADPORT}/dist/client/bundle.js"></script>`;
 }
 else {
-  var SCRIPT = `<script src="dist/${prodConfig.output.filename}"></script>`;
+  var SCRIPT = `<script src="${PUBLIC_PATH}/bundle.js"></script>`;
 }
 
 app.use('/dist', Express.static('dist'));
@@ -104,7 +106,7 @@ function renderFullPage(html, initialState) {
   <html>
     <head>
       <title>DAIAD PDF Reports</title>
-      <link href="dist/style.css" rel="stylesheet" />
+      <link href="${PUBLIC_PATH}/style.css" rel="stylesheet" />
       <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     </head>
     <body>
