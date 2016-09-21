@@ -11,6 +11,7 @@ import myApp from './reducers';
 
 import '../style.css';
 import '../assets/fonts';
+import '../assets/logo.png';
 
 import { init } from './actions';
 

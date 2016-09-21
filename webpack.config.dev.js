@@ -32,7 +32,7 @@ module.exports = {
       },
       */
       {
-        test: /\.css$/,
+        test: /\.(css|jpg|png)$/,
         loader: 'file?name=[name].[ext]'
       },
       {
