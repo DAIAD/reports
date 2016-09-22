@@ -36,41 +36,15 @@ app.use(bodyParser.json());
 app.use(handleRequest);
 //app.post('/', handleRequest);
 
-function validateInput(options) {
-  const { locale, username, password, from, to, api } = options;
-
-  if (!locale || !username || !password || !from || !to || !api) {
-    throw 'not all required parameters provided, need locale, username, password, from, to, api';
-  }
-  if (!validator.isIn(locale, ['en', 'el', 'es'])) {
-    throw 'locale must be one of en, el, es';
-  }
-  if (!validator.isISO8601(from)) {
-    throw 'from date must be a valid ISO-8601 date (YYYYMMDD)';
-  }
-  if (!validator.isISO8601(to)) {
-    throw 'to date must be a valid ISO-8601 date (YYYYMMDD)';
-  }
-  if (moment(to, 'YYYYMMDD') - moment(from, 'YYYYMMDD') < 0) {
-    throw 'to date must be after from date';
-  } 
-  if (!validator.isURL(api, {protocols: ['http', 'https'], require_protocol: true})) {
-    throw 'api must be a valid http or https url (including protocol)';
-  }
-}
 
 function handleRequest (req, res) {
 
-  //GET request in development
-  if (NODE_ENV === 'development') {
+  //Accept both GET (development only) and POST requests
+  if (req.method === 'GET' && NODE_ENV === 'development') {
     var { locale='en', username, password, from, to, api } = req.query;
-    //var { locale='en', username, password, from, to, api } = req.body;
-
   }
-  //POST request in production
-  else {
+  else if (req.method === 'POST') {
     var { locale='en', username, password, from, to, api } = req.body;
-    //var { locale='en', username, password, from, to, api } = req.query;
   }
 
   try {
@@ -98,6 +72,29 @@ function handleRequest (req, res) {
       console.error('Oops, sth went wrong: ', err);
       res.status(400).send(`Sorry, couldn\'t render due to: ${err}`); 
     });
+}
+
+function validateInput(options) {
+  const { locale, username, password, from, to, api } = options;
+
+  if (!locale || !username || !password || !from || !to || !api) {
+    throw 'not all required parameters provided, need locale, username, password, from, to, api';
+  }
+  if (!validator.isIn(locale, ['en', 'el', 'es'])) {
+    throw 'locale must be one of en, el, es';
+  }
+  if (!validator.isISO8601(from)) {
+    throw 'from date must be a valid ISO-8601 date (YYYYMMDD)';
+  }
+  if (!validator.isISO8601(to)) {
+    throw 'to date must be a valid ISO-8601 date (YYYYMMDD)';
+  }
+  if (moment(to, 'YYYYMMDD') - moment(from, 'YYYYMMDD') < 0) {
+    throw 'to date must be after from date';
+  } 
+  if (!validator.isURL(api, {protocols: ['http', 'https'], require_protocol: true})) {
+    throw 'api must be a valid http or https url (including protocol)';
+  }
 }
 
 function renderFullPage(html, initialState) {
