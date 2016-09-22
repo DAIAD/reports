@@ -9,7 +9,7 @@ import 'babel-polyfill';
 import App from './containers';
 import myApp from './reducers';
 
-import '../style.css';
+import '../assets/style.css';
 import '../assets/fonts';
 import '../assets/logo.png';
 
