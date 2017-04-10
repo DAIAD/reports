@@ -151,7 +151,7 @@ const prepareWidgets = function(options, profile, breakdown, brackets) {
     
     const { userKey, credentials, from, to, api } = options;
     if (!credentials || !from || !to || !userKey) 
-      throw new Error('prepareInfoboxes: Insufficient data provided ' +
+      throw new Error('prepareWidgets: Insufficient data provided ' +
                       '(requires credentials, from, to, userKey)');
  
     const deviceKey = Array.isArray(profile.devices) && 
@@ -164,7 +164,9 @@ const prepareWidgets = function(options, profile, breakdown, brackets) {
     return getState().widgets.map(widget => {
       const { type, deviceType, period, id } = widget;
       
-      if (!id || !type || !deviceType) throw new Error('prepareInfoboxes: Insufficient data provided in widget (requires id, type, deviceType)');
+      if (!id || !type || !deviceType) 
+        throw new Error('prepareWidgets: Insufficient data provided ' +
+                        'in widget (requires at least id, type, deviceType)');
 
       const startDate = getState().date.from;
       const endDate = getState().date.to;
