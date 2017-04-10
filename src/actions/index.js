@@ -182,6 +182,7 @@ const prepareWidgets = function(options, profile, breakdown, brackets) {
         brackets,
         breakdown,
         userKey,
+        renderAsImage: true,
       };
 
       dispatch(setWidgetData(id, Object.assign({}, data)));
