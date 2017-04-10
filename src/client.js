@@ -13,9 +13,8 @@ import '../assets/style.css';
 import '../assets/fonts';
 import '../assets/logo.png';
 
-import { init } from './actions';
-
 let middleware = [thunkMiddleware];
+
 if (process.env.NODE_ENV === 'development') {
   middleware = [...middleware, createLogger()];
 }
@@ -28,4 +27,3 @@ render(
   </Provider>,
   document.getElementById('app')
 );
-//});

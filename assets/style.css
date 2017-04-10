@@ -183,6 +183,7 @@ b {
 }
 
 .report-body {
+  margin-top: 20px;
   overflow: auto;
 }
 .report-widgets {
@@ -210,8 +211,8 @@ b {
 }
 
 .widget {
-
-
+  display: inline-block;
+  width: 50%;
 }
 
 .infobox {

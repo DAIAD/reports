@@ -22,8 +22,8 @@ const myApp = React.createClass({
 });
 
 const mapStateToProps = (state, ownProps)  => ({
-  locale: state.locale,
-  messages: state.i18nMessages
+  locale: state.i18n.locale,
+  messages: state.i18n.messages
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => bindActionCreators(actions, dispatch);

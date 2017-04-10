@@ -36,19 +36,18 @@ app.use(bodyParser.json());
 app.use(handleRequest);
 //app.post('/', handleRequest);
 
-
 function handleRequest (req, res) {
 
   //Accept both GET (development only) and POST requests
   if (req.method === 'GET' && NODE_ENV === 'development') {
-    var { locale='en', username, password, from, to, api } = req.query;
+    var { locale='en', username, password, userKey, from, to, api } = req.query;
   }
   else if (req.method === 'POST') {
-    var { locale='en', username, password, from, to, api } = req.body;
+    var { locale='en', username, password, from, to, api, userKey } = req.body;
   }
 
   try {
-    validateInput({ locale, username, password, from, to, api });
+    validateInput({ locale, username, password, userKey, from, to, api });
   }
   catch(err) {
     res.status(400).send(`Input validation error: ${err}`);
@@ -56,7 +55,7 @@ function handleRequest (req, res) {
 
   const store = createStore(myApp, applyMiddleware(thunkMiddleware));
 
-  store.dispatch(init({ locale, from, to, api, credentials: {username, password} }))
+  store.dispatch(init({ locale, from, to, api, userKey, credentials: {username, password} }))
   .then(() => {
 
     const html = renderToString(
@@ -70,15 +69,15 @@ function handleRequest (req, res) {
     })
     .catch((err) => {
       console.error('Oops, sth went wrong: ', err);
-      res.status(400).send(`Sorry, couldn\'t render due to: ${err}`); 
-    });
+      res.status(400).send(`Sorry, couldn\'t render due to: ${err}`);
+    });  
 }
 
 function validateInput(options) {
-  const { locale, username, password, from, to, api } = options;
+  const { locale, username, password, userKey, from, to, api } = options;
 
-  if (!locale || !username || !password || !from || !to || !api) {
-    throw 'not all required parameters provided, need locale, username, password, from, to, api';
+  if (!locale || !username || !password || !from || !to || !api || !userKey) {
+    throw 'not all required parameters provided, need locale, username, password, userKey, from, to, api';
   }
   if (!validator.isIn(locale, ['en', 'el', 'es'])) {
     throw 'locale must be one of en, el, es';
@@ -94,6 +93,9 @@ function validateInput(options) {
   } 
   if (!validator.isURL(api, {protocols: ['http', 'https'], require_protocol: true})) {
     throw 'api must be a valid http or https url (including protocol)';
+  }
+  if (!validator.isUUID(userKey)) {
+    throw 'user key must be valid UUID';
   }
 }
 

@@ -1,126 +1,183 @@
 const initialState = {
-  locale: 'en',
-  i18nMessages: {},
-  fromDate: null,
-  toDate: null,
-  profile: {
-    devices: [],
+  i18n: {
+    locale: null,
+    messages: {},
   },
-  layout: [
-    {i: "1", x:0, y:0, w:2, h:2},
-    {i: "2", x:2, y:0, w:2, h:2},
-    {i: "3", x:2, y:0, w:2, h:2},
-    {i: "4", x:0, y:0, w:2, h:1},
-    {i: "5", x:0, y:1, w:2, h:1},
-    {i: "6", x:2, y:2, w:2, h:2},
-  ],
-  infobox: [
-      {
-        id: "1", 
-        title: "Water consumption", 
-        type: "total",
-        display: "chart",
-        deviceType: "METER",
-        period: "month",
-        metric: "difference",
-        data: [],
-      },
-      {
-        id: "2", 
-        title: "Total consumption",
-        type: "total",
-        display: "stat",
-        period: "month",
-        deviceType: "METER",
-        metric: "difference",
-        data: [],
-        },
-      /*
+  date: {
+    from: null,
+    to: null,
+  },
+  credentials: {},
+  api: null,
+  user: {
+    profile: {
+      devices: [],
+      utility: {},
+    },
+  },
+  widgets: [
     {
-      id: "6", 
-      title: "Shower efficiency",
-      type: "efficiency",
-      display: "stat",
-      deviceType: "AMPHIRO",
-      period: "twenty",
-      metric: "energy",
-      data: [],
-      },
-      */
-    {
-      id: "3", 
-      title: "Breakdown",
-      type: "breakdown",
+      id: "1", 
+      title: "Water consumption", 
+      type: "total",
       display: "chart",
       deviceType: "METER",
-      period: "year",
-      metric: "difference",
+      period: "month",
+      metric: "volume",
       data: [],
     },
     {
-      id: "4", 
-      title: "Forecast",
-      type: "forecast",
+      id: "2",
+      title: 'Last 10 showers',
+      type: "total",
       display: "chart",
-      deviceType: "METER",
-      period: "year",
-      metric: "difference",
+      deviceType: 'AMPHIRO',
+      period: 'ten',
+      metric: 'volume',
       data: [],
     },
     {
-      id: "5", 
-      title: "Comparison",
-      type: "comparison",
-      display: "chart",
-      deviceType: "METER",
-      period: "year",
-      metric: "difference",
+      id: '3',
+      type: 'comparison',
+      title: 'Comparisons',
+      display: 'chart',
+      deviceType: 'METER',
+      metric: 'volume',
       data: [],
     },
     {
-      id: "6", 
-      title: "Monthly budget",
-      type: "budget",
-      display: "chart",
-      deviceType: "METER",
-      period: "day",
-      metric: "difference",
+      id: '4',
+      type: 'wateriq',
+      title: 'Water IQ comparison',
+      display: 'chart',
+      deviceType: 'METER',
+      metric: 'volume',
       data: [],
-      },
+    },
+    {
+      id: '5',
+      title: 'Your water IQ',
+      type: 'wateriq',
+      display: 'stat',
+      deviceType: 'METER',
+      metric: 'volume',
+      data: [],
+    },
+    {
+      id: '6',
+      title: 'Member showers ranking',
+      type: 'ranking',
+      display: 'chart',
+      period: 'all',
+      deviceType: 'AMPHIRO',
+      metric: 'volume',
+      data: [],
+    },
+    {
+      id: '7',
+      title: 'Energy efficiency (last 10 showers)',
+      type: 'efficiency',
+      display: 'stat',
+      period: 'ten',
+      deviceType: 'AMPHIRO',
+      metric: 'energy',
+      data: [],
+    },
+    {
+      id: '8',
+      title: 'Last 10 showers average temperature',
+      type: 'total',
+      display: 'stat',
+      deviceType: 'AMPHIRO',
+      period: 'ten',
+      metric: 'temperature',
+      data: [],
+    },
+    {
+      id: '9',
+      title: 'Next month forecast',
+      type: 'forecast',
+      deviceType: 'METER',
+      display: 'chart',
+      period: 'month',
+      metric: 'volume',
+      periodIndex: 1,
+      data: [],
+    },
+    {
+      id: '10',
+      title: 'Pricing',
+      type: 'pricing',
+      period: 'month',
+      deviceType: 'METER',
+      display: 'chart',
+      metric: 'volume',
+      data: [],
+    },
+    {
+      id: '11',
+      title: 'Water breakdown',
+      type: 'breakdown',
+      period: 'month',
+      deviceType: 'METER',
+      display: 'chart',
+      metric: 'volume',
+      data: [],
+    },
   ]
 }
 
 export default (state = initialState, action) => {
   
   switch (action.type) {
+    case 'SET_DATE_RANGE':
+      return {
+         ...state,
+         date: {
+           from: action.from,
+           to: action.to,
+         },
+      };    
     
     case 'SET_LOCALE':
-      return {...state,
-        locale: action.locale
+      return {
+        ...state,
+        i18n: {
+          locale: action.locale,
+          messages: action.messages,
+        },
       };
-    
-    case 'SET_DATE_RANGE':
-      return {...state,
-        fromDate: action.from,
-        toDate: action.to
+     
+    case 'SET_CREDENTIALS':
+      return {
+        ...state,
+        credentials: action.credentials,
       };
 
-    case 'SET_I18N_MESSAGES':
-      return {...state,
-        i18nMessages: action.messages
+    case 'SET_API_URL':
+      return {
+        ...state,
+        api: action.url,
       };
-    
+
     case 'USER_RECEIVED_PROFILE': 
-      return {...state,
-        profile: action.profile
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: action.profile,
+        },
       };
 
-    case 'SET_INFOBOX_DATA': {
-      let newInfobox = state.infobox.slice();
-      const index = newInfobox.findIndex((el, idx, arr) => el.id === action.id);
-      newInfobox[index] = Object.assign({}, newInfobox[index], action.data);
+    case 'SET_WIDGET_DATA': {
+      const newWidgets = [...state.widgets];
+      const index = newWidgets.findIndex((el, idx, arr) => el.id === action.id);
+      newWidgets[index] = {
+        ...newWidgets[index],
+        ...action.data,
+      };
       return {...state,
-        infobox: newInfobox
+        widgets: newWidgets,
       };
     }
 

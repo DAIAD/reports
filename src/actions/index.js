@@ -1,43 +1,32 @@
 import moment from 'moment';
 
-import { fetchInfoboxData } from '../common/actions/QueryActions';
-import { fetchProfile } from './UserActions';
-
-import { lastNFilterToLength, flattenMessages } from '../common/utils/general';
-import { getDeviceKeysByType } from '../common/utils/device';
+import userAPI from '../api/user';
+import QueryActions from './QueryActions';
+import { utils } from 'daiad-home-web';
+const { general: genUtils } = utils;
 
 import { addLocaleData } from 'react-intl';
 
 import enLocaleData from 'react-intl/locale-data/en';
 import elLocaleData from 'react-intl/locale-data/el';
 import esLocaleData from 'react-intl/locale-data/es';
-//import deLocaleData from 'react-intl/locale-data/de';
+import deLocaleData from 'react-intl/locale-data/de';
 
 addLocaleData(enLocaleData);
 addLocaleData(elLocaleData);
 addLocaleData(esLocaleData);
-//addLocaleData(deLocaleData);
+addLocaleData(deLocaleData);
 
 import enMessages from '../i18n/en';
 import esMessages from '../i18n/es';
 import elMessages from '../i18n/el';
 
-export const doNothing = function() {
-  return {
-    type: 'DO_NOTHING'
-  }
-};
+// action creators 
 
-export const setLocale = function(locale) {
+const setLocale = function(locale, messages) {
   return {
     type: 'SET_LOCALE',
-    locale
-  }
-};
-
-const setI18nMessages = function(messages) {
-  return {
-    type: 'SET_I18N_MESSAGES',
+    locale,
     messages
   }
 };
@@ -50,61 +39,81 @@ const setDateRange = function(from, to) {
   }
 };
 
-export const init = function(options) {
+const setCredentials = function (credentials) {
+  return {
+    type: 'SET_CREDENTIALS',
+    credentials,
+  };
+};
+
+const setApiURL = function (url) {
+  return {
+    type: 'SET_API_URL',
+    url,
+  };
+};
+
+const setWidgetData = function(id, data) {
+  return {
+    type: 'SET_WIDGET_DATA',
+    id,
+    data
+  };
+};
+
+
+const receivedProfile = function(success, errors, profile) {
+  return {
+    type: 'USER_RECEIVED_PROFILE',
+    profile
+  };
+};
+
+// thunks
+
+const fetchUserProfile = function(userKey) {
   return function(dispatch, getState) {
-    const { api, from, to, locale, credentials } = options;
-    const { username, password } = credentials;
+    const credentials = getState().credentials;
+    const api = getState().api;
 
-    dispatch(changeLocale(locale));
-    dispatch(setDateRange(from, to));
-    
-    return dispatch(fetchProfile({username, password, base: api}))
-    .then((profile) => {
-      dispatch(prepareInfoboxes(options));
-      return dispatch(fetchAllInfoboxesData())
-        .then(() => {
-          return Promise.resolve();
-        });
-
+    return userAPI.getUserProfile({ userKey, api, credentials })
+    .then((response) => {
+      const { success, errors, profile } = response;
+      dispatch(receivedProfile(success, errors.length ? errors[0].code : null, profile));
+      return profile;
     })
+    .catch((errors) => {
+      console.error('Error caught on profile fetch:', errors);
+      return errors;
+      });
   };
 };
 
 const changeLocale = function(locale) {
   return function(dispatch, getState) {
-    dispatch(setLocale(locale));
-
     switch (locale) {
-      
       case 'en': 
-        dispatch(setI18nMessages(flattenMessages(enMessages)));
+        dispatch(setLocale(locale, genUtils.flattenMessages(
+          enMessages,
+        )));
         break;
-        /*
-        require.ensure([
-          'react-intl/locale-data/en',
-          //'../i18n/en'
-        ], require => {
-          addLocaleData(require('react-intl/locale-data/en'));
-          dispatch(setI18nMessages(require('../i18n/en')));
-          });
-          */
-
       
         case 'el': 
-          dispatch(setI18nMessages(flattenMessages(elMessages)));
+          dispatch(setLocale(locale, genUtils.flattenMessages(
+            elMessages,
+          )));
           break;
-          /*
-        require.ensure([
-          'react-intl/locale-data/el',
-          //'../i18n/el'
-        ], require => {
-          addLocaleData(require('react-intl/locale-data/el'));
-          dispatch(setI18nMessages(require('../i18n/el')));
-          });
-          */
         
         case 'es': 
-          dispatch(setI18nMessages(flattenMessages(esMessages)));
+          dispatch(setLocale(locale, genUtils.flattenMessages(
+            esMessages,
+          )));
+          break;
+
+        case 'de': 
+          dispatch(setLocale(locale, genUtils.flattenMessages(
+            deMessages,
+          )));
           break;
 
       default:
@@ -114,94 +123,82 @@ const changeLocale = function(locale) {
   };
 };
 
-const setInfoboxData = function(id, data) {
-  return {
-    type: 'SET_INFOBOX_DATA',
-    id,
-    data
+const fetchWaterBreakdown = function (userKey) {
+  return function (dispatch, getState) {
+    return dispatch(QueryActions.fetchWaterBreakdown(userKey))
+    .then(labels => Array.isArray(labels) ? labels.reverse() : labels);
   };
 };
 
-const prepareInfoboxes = function(options) {
+const fetchPriceBrackets = function (userKey) {
+  return function (dispatch, getState) {
+    return dispatch(QueryActions.fetchPriceBrackets(userKey));
+  };
+};
+
+const prepareWidgets = function(options, profile, breakdown, brackets) {
   return function(dispatch, getState) {
     
-    const { credentials, from, to, api } = options;
-    if (!credentials || !from || !to) throw new Error('prepareInfoboxes: Insufficient data provided (requires credentials, from, to)');
+    const { userKey, credentials, from, to, api } = options;
+    if (!credentials || !from || !to || !userKey) 
+      throw new Error('prepareInfoboxes: Insufficient data provided ' +
+                      '(requires credentials, from, to, userKey)');
+ 
+    const deviceKey = Array.isArray(profile.devices) && 
+      profile.devices
+      .filter(dev => dev.type === 'AMPHIRO')
+      .map(dev => dev.deviceKey);
 
-    return getState().infobox.map(infobox => {
+    const members = profile.household && profile.household.members;
 
-    const { type, deviceType, period, id } = infobox;
-    
-    if (!id || !type || !deviceType) throw new Error('prepareInfoboxes: Insufficient data provided in infobox (requires id, type, deviceType)');
+    return getState().widgets.map(widget => {
+      const { type, deviceType, period, id } = widget;
+      
+      if (!id || !type || !deviceType) throw new Error('prepareInfoboxes: Insufficient data provided in widget (requires id, type, deviceType)');
 
-    const startDate = moment(from, 'YYYYMMDD').valueOf();
-    const endDate = moment(to, 'YYYYMMDD').valueOf();
-    //const startDate = moment(`01-${month}-${year}`, 'DD-MM-YYYY').valueOf();
-    //const endDate = moment(startDate).endOf('month').valueOf();
-
-    const prevStartDate = moment(startDate).subtract(1, 'month').valueOf();
-    const prevEndDate = moment(startDate).endOf('month').valueOf();
-    
-    const data = {};
-    data.time = {
+      const startDate = getState().date.from;
+      const endDate = getState().date.to;
+      
+      const data = {
+        time: {
           startDate,
           endDate,
-          granularity: 3
-    };
-
-    const deviceKey = getDeviceKeysByType(getState().profile.devices, deviceType);
-
-    if (deviceType === 'METER') {
-
-      data.query = {
-        deviceKey,   
-        credentials,
-        base: api
-      }; 
-
-      if (type === 'total') {
-        //prev month
-        //data.query.prevTime = getPreviousPeriodSoFar(period);
-        data.prevTime = {
-          startDate: prevStartDate,
-          endDate: prevEndDate,
-          granularity: 3
-        };
-      }
-    }
-    else if (deviceType === 'AMPHIRO') {
-      data.query = {
+          granularity: 2
+        },
         deviceKey,
-        type: 'SLIDING',
-        length: lastNFilterToLength(period),
-        credentials,
-        base: api
-      }
-        //return dispatch(queryDevice({deviceKey:device, type: 'SLIDING', length:lastNFilterToLength(period), csrf: getState().user.csrf}))
-    }
+        members,
+        brackets,
+        breakdown,
+        userKey,
+      };
 
-    dispatch(setInfoboxData(id, Object.assign({}, data)));
-  });
+      dispatch(setWidgetData(id, Object.assign({}, data)));
+    });
 
   };
 };
 
-const fetchAllInfoboxesData = function() {
+const fetchAllWidgetData = function(options) {
   return function(dispatch, getState) {
+    const { userKey, credentials, api, from, to } = options;
 
-    return getState().infobox.map(infobox => {
-      return fetchInfoboxData(infobox);
-    })
+    return getState().widgets
+    .map(widget => QueryActions.fetchWidgetData(widget))
     .reduce((prev, curr, i, arr) => {
       return prev.then(() => {
         return dispatch(curr)
         .then(res => {
-          const id = getState().infobox[i].id;
-          dispatch(setInfoboxData(id, res));
+          if (getState().widgets[i]) {
+            const id = getState().widgets[i].id;
+            dispatch(setWidgetData(id, res));
+          }
         })
         .catch(err => {
-          console.error('couldnt set infobox data cause of', err);
-          dispatch(setInfoboxData(id, {data: [], error: 'Oops, sth went wrong'}));
+          if (getState().widgets[i]) {
+            const id = getState().widgets[i].id;
+            console.error('couldnt set widget data cause of', err);
+            dispatch(setWidgetData(id, {data: [], error: 'Oops, sth went wrong'}));
+          }
         });
       });
     }, Promise.resolve());
@@ -209,6 +206,26 @@ const fetchAllInfoboxesData = function() {
   };
 };
 
+export const init = function(options) {
+  return function(dispatch, getState) {
+    const { api, from, to, locale, userKey, credentials } = options;
 
+    const fromTimestamp = moment(from, 'YYYYMMDD').valueOf();
+    const toTimestamp = moment(to, 'YYYYMMDD').valueOf();
 
+    dispatch(changeLocale(locale));
+    dispatch(setCredentials(credentials));
+    dispatch(setApiURL(api));
+    dispatch(setDateRange(fromTimestamp, toTimestamp));
 
+    return Promise.all([
+      dispatch(fetchUserProfile(userKey)),
+      dispatch(fetchWaterBreakdown(userKey)),
+      dispatch(fetchPriceBrackets(userKey))
+    ])
+    .then(([profile, breakdown, brackets]) => {
+      dispatch(prepareWidgets(options, profile, breakdown, brackets));
+      return dispatch(fetchAllWidgetData(options));
+    });
+  };
+};

@@ -1,8 +1,8 @@
 var page = require('webpage').create();
 var system = require('system');
 
-if (system.args.length < 9 || system.args.length > 9) {
-  console.log('Usage: saveToPdf.js URL API locale username password from to output');
+if (system.args.length < 10 || system.args.length > 10) {
+  console.log('Usage: saveToPdf.js URL API locale username password userKey from to output');
   phantom.exit();
 }
 else {
@@ -11,15 +11,17 @@ else {
   const locale = system.args[3];
   const username = system.args[4];
   const password = system.args[5];
-  const from = system.args[6];
-  const to = system.args[7];
-  const output = system.args[8];
+  const userKey = system.args[6];
+  const from = system.args[7];
+  const to = system.args[8];
+  const output = system.args[9];
   //const dpi = system.args[7];
   const dpi = 96;
 
   const data = {
     username:username,
     password:password,
+    userKey: userKey,
     from:from,
     to:to,
     locale:locale,
