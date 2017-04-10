@@ -9,10 +9,11 @@ import bodyParser from 'body-parser';
 import moment from 'moment';
 import validator from 'validator';
 
-import { PUBLIC_PATH } from './constants';
 import { init } from './actions';
 import myApp from './reducers';
 import App from './containers';
+
+import PUBLIC_PATH from '../path';
 
 const app = Express();
 
@@ -24,7 +25,7 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 
 if (NODE_ENV === 'development') {
-  var SCRIPT = `<script src="http://${HOTLOADHOST}:${HOTLOADPORT}/dist/client/bundle.js"></script>`;
+  var SCRIPT = `<script src="http://${HOTLOADHOST}:${HOTLOADPORT}${PUBLIC_PATH}/bundle.js"></script>`;
   // for react-echarts
   console.debug = function(/* ...args */) {
     var vargs = Array.prototype.slice.call(arguments);
@@ -36,7 +37,7 @@ else {
 }
 
 
-app.use('/dist', Express.static('dist'));
+app.use('/assets', Express.static('assets'));
 app.use(bodyParser.json());
 
 app.use(handleRequest);

@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var PUBLIC_PATH = require('./path');
 
 module.exports = {
   context: __dirname + "/",
@@ -54,6 +55,6 @@ module.exports = {
   ],
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist/client/"
+    path: __dirname + PUBLIC_PATH 
   },
 }

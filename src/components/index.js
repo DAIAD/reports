@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PUBLIC_PATH } from '../constants';
+import PUBLIC_PATH from '../../path';
 import { injectIntl, FormattedMessage, FormattedDate } from 'react-intl';
 
 import { components } from 'daiad-home-web';

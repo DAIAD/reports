@@ -78,7 +78,7 @@
       }
     },
     "build-server-prod": {
-      "command": "babel -d dist/server/ src/ -s"
+      "command": "babel -d assets/server/ src/ -s && babel -d assets/ path.js --copy-files"
     },
     "build-client-prod": {
       "command": "webpack --config webpack.config.js",
@@ -87,7 +87,7 @@
       }
     },
     "start-server-prod": {
-      "command": "NODE_HOST=$npm_package_config_nodeHost NODE_PORT=$npm_package_config_nodePort node dist/server/server.js",
+      "command": "NODE_HOST=$npm_package_config_nodeHost NODE_PORT=$npm_package_config_nodePort node assets/server/server.js",
       "env": {
         "NODE_ENV": "production"
       }

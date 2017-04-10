@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var PUBLIC_PATH = require('./path');
 
 var HOST = process.env.HOT_LOAD_HOST;
 var HOTLOADPORT = process.env.HOT_LOAD_PORT;
@@ -62,7 +63,7 @@ module.exports = {
   ],
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist/client/",
-    publicPath: 'http://' + HOST + ':' + HOTLOADPORT + '/dist/client/'
+    path: __dirname + PUBLIC_PATH,
+    publicPath: 'http://' + HOST + ':' + HOTLOADPORT + PUBLIC_PATH,
   },
 }
