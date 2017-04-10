@@ -17,9 +17,15 @@ addLocaleData(elLocaleData);
 addLocaleData(esLocaleData);
 addLocaleData(deLocaleData);
 
-import enMessages from '../i18n/en';
-import esMessages from '../i18n/es';
-import elMessages from '../i18n/el';
+import enHome from 'daiad-home-web/i18n/en.json';
+import elHome from 'daiad-home-web/i18n/el.json';
+import esHome from 'daiad-home-web/i18n/es.json';
+import deHome from 'daiad-home-web/i18n/de.json';
+
+import enReports from '../i18n/en';
+import esReports from '../i18n/es';
+import elReports from '../i18n/el';
+import deReports from '../i18n/de';
 
 // action creators 
 
@@ -93,27 +99,31 @@ const changeLocale = function(locale) {
   return function(dispatch, getState) {
     switch (locale) {
       case 'en': 
-        dispatch(setLocale(locale, genUtils.flattenMessages(
-          enMessages,
-        )));
+        dispatch(setLocale(locale, genUtils.flattenMessages({
+          ...enHome,
+          ...enReports,
+        })));
         break;
       
         case 'el': 
-          dispatch(setLocale(locale, genUtils.flattenMessages(
-            elMessages,
-          )));
+          dispatch(setLocale(locale, genUtils.flattenMessages({
+            ...elHome,
+            ...elReports,
+          })));
           break;
         
         case 'es': 
-          dispatch(setLocale(locale, genUtils.flattenMessages(
-            esMessages,
-          )));
+          dispatch(setLocale(locale, genUtils.flattenMessages({
+            ...esHome,
+            ...esReports,
+          })));
           break;
 
         case 'de': 
-          dispatch(setLocale(locale, genUtils.flattenMessages(
-            deMessages,
-          )));
+          dispatch(setLocale(locale, genUtils.flattenMessages({
+            ...deHome,
+            ...deReports,
+          })));
           break;
 
       default:

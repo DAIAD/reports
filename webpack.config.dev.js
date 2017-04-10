@@ -36,6 +36,10 @@ module.exports = {
         loader: 'file?name=[name].[ext]'
       },
       {
+        test: /\.json$/,
+        loader: 'json-loader',
+      },
+      {
         test: /\.ttf$/,
         loader: 'file?name=fonts/[name].[ext]'
       },
