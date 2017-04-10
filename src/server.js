@@ -9,7 +9,6 @@ import bodyParser from 'body-parser';
 import moment from 'moment';
 import validator from 'validator';
 
-
 import { PUBLIC_PATH } from './constants';
 import { init } from './actions';
 import myApp from './reducers';
@@ -23,12 +22,19 @@ const HOTLOADHOST = process.env.HOT_LOAD_HOST;
 const HOTLOADPORT = process.env.HOT_LOAD_PORT;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+
 if (NODE_ENV === 'development') {
   var SCRIPT = `<script src="http://${HOTLOADHOST}:${HOTLOADPORT}/dist/client/bundle.js"></script>`;
+  // for react-echarts
+  console.debug = function(/* ...args */) {
+    var vargs = Array.prototype.slice.call(arguments);
+    console.log.apply(this, vargs);
+  };
 }
 else {
   var SCRIPT = `<script src="${PUBLIC_PATH}/bundle.js"></script>`;
 }
+
 
 app.use('/dist', Express.static('dist'));
 app.use(bodyParser.json());
@@ -37,7 +43,6 @@ app.use(handleRequest);
 //app.post('/', handleRequest);
 
 function handleRequest (req, res) {
-
   //Accept both GET (development only) and POST requests
   if (req.method === 'GET' && NODE_ENV === 'development') {
     var { locale='en', username, password, userKey, from, to, api } = req.query;
@@ -57,7 +62,6 @@ function handleRequest (req, res) {
 
   store.dispatch(init({ locale, from, to, api, userKey, credentials: {username, password} }))
   .then(() => {
-
     const html = renderToString(
       <Provider store={store}>
         <App />
