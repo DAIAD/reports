@@ -28,7 +28,7 @@ module.exports = {
       },
       {
         test: /\.json$/,
-        use: 'json-loader',
+        loader: 'json-loader',
       },
       {
         test: /\.ttf$/,
