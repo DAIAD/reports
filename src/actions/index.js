@@ -230,8 +230,8 @@ export const init = function(options) {
   return function(dispatch, getState) {
     const { api, from, to, locale, userKey, credentials } = options;
 
-    const fromTimestamp = moment(from, 'YYYYMMDD').valueOf();
-    const toTimestamp = moment(to, 'YYYYMMDD').valueOf();
+    const fromTimestamp = moment(from, 'YYYYMMDD').startOf('day').valueOf();
+    const toTimestamp = moment(to, 'YYYYMMDD').endOf('day').valueOf();
 
     dispatch(changeLocale(locale));
     dispatch(setCredentials(credentials));
