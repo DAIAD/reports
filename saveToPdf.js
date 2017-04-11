@@ -15,7 +15,7 @@ else {
   const from = system.args[7];
   const to = system.args[8];
   const output = system.args[9];
-  //const dpi = system.args[7];
+  
   const dpi = 96;
 
   const data = {
@@ -41,7 +41,7 @@ else {
       height: '1cm',
       contents: phantom.callback(function(pageNum, numPages) {
         if (numPages > 1) {
-          return "<div style='font-size:0.8em'><span style='float:right'>Page " + pageNum + "/" + numPages + "</span></div>";
+          return "<div style='font-size:0.8em'><span style='float:right'>" + pageNum + "/" + numPages + "</span></div>";
         }
         else {
           return "";
@@ -54,9 +54,14 @@ else {
     console.log(msg);
   }
 
+  var errors = [];
+  page.onError = function(msg, trace) {
+    errors.push(msg);
+    console.log('\n' + msg);
+  }
+
   const settings = {
     operation: "POST",
-    //operation: "GET",
     encoding: "utf8",
     headers: {
       "Content-Type": "application/json"
@@ -65,17 +70,19 @@ else {
   };
 
   page.open(address, settings, function(status) {
-    console.log('opened page with status:', status);
+    console.log('\nOpened page with status:', status);
     if (status !== 'success') {
       console.error('Unable to execute POST request');
       phantom.exit();
-    }
-    else {
-      window.setTimeout(function() {
-        page.render(output);
-        console.log('success');
-        phantom.exit();
-      }, 1000);
-    }
+    } 
+    if (errors.length > 0) {
+      console.log('\nFound ' + errors.length + ' error(s)');
+    } 
+
+    window.setTimeout(function() {
+      page.render(output);
+      console.log('\nRendered PDF successfully!');
+      phantom.exit();
+    }, 1000);
   });
 }

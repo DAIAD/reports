@@ -9,6 +9,7 @@ const initialState = {
   },
   credentials: {},
   api: null,
+  errors: [],
   user: {
     profile: {
       devices: [],
@@ -167,6 +168,12 @@ export default (state = initialState, action) => {
           ...state.user,
           profile: action.profile,
         },
+      };
+
+    case 'SET_ERROR':
+      return {
+        ...state,
+        errors: [...state.errors, action.error],
       };
 
     case 'SET_WIDGET_DATA': {

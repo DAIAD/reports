@@ -21,6 +21,11 @@ if (process.env.NODE_ENV === 'development') {
 const initialState = window.__INITIAL_STATE__;
 const store = createStore(myApp, initialState, applyMiddleware(...middleware));
 
+if (initialState.errors.length > 0) {
+  initialState.errors.forEach(error => {
+    console.error(error);
+  });
+}
 render(
   <Provider store={store}>
     <App />

@@ -9,7 +9,7 @@ import bodyParser from 'body-parser';
 import moment from 'moment';
 import validator from 'validator';
 
-import { init } from './actions';
+import { init, setError } from './actions';
 import myApp from './reducers';
 import App from './containers';
 
@@ -52,15 +52,25 @@ function handleRequest (req, res) {
     var { locale='en', username, password, from, to, api, userKey } = req.body;
   }
 
+  const store = createStore(myApp, applyMiddleware(thunkMiddleware));
+
+  // validate input
+
   try {
     validateInput({ locale, username, password, userKey, from, to, api });
   }
   catch(err) {
-    res.status(400).send(`Input validation error: ${err}`);
+    const validationError = 'input validation error: ' + err;
+    store.dispatch(setError(validationError));
+    console.error('input validation error', validationError);
+
+    const initialState = store.getState();
+
+    res.status(200).send(renderFullPage('', initialState));
   }
 
-  const store = createStore(myApp, applyMiddleware(thunkMiddleware));
-
+  // initialize data
+  
   store.dispatch(init({ locale, from, to, api, userKey, credentials: {username, password} }))
   .then(() => {
     const html = renderToString(
@@ -74,7 +84,11 @@ function handleRequest (req, res) {
     })
     .catch((err) => {
       console.error('Oops, sth went wrong: ', err);
-      res.status(400).send(`Sorry, couldn\'t render due to: ${err}`);
+      store.dispatch(setError(err.toString()));
+  
+      const initialState = store.getState();
+
+      res.status(200).send(renderFullPage('', initialState));
     });  
 }
 

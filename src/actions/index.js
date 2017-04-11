@@ -68,10 +68,17 @@ const setWidgetData = function(id, data) {
 };
 
 
-const receivedProfile = function(success, errors, profile) {
+const receivedProfile = function(profile) {
   return {
     type: 'USER_RECEIVED_PROFILE',
     profile
+  };
+};
+
+export const setError = function (error) {
+  return {
+    type: 'SET_ERROR',
+    error,
   };
 };
 
@@ -85,13 +92,12 @@ const fetchUserProfile = function(userKey) {
     return userAPI.getUserProfile({ userKey, api, credentials })
     .then((response) => {
       const { success, errors, profile } = response;
-      dispatch(receivedProfile(success, errors.length ? errors[0].code : null, profile));
+      if (!success || (Array.isArray(errors) && errors.length > 0) || !profile) {
+        throw 'couldn\'t fetch profile for user ' + userKey;
+      }
+      dispatch(receivedProfile(profile));
       return profile;
-    })
-    .catch((errors) => {
-      console.error('Error caught on profile fetch:', errors);
-      return errors;
-      });
+    });
   };
 };
 
@@ -211,6 +217,7 @@ const fetchAllWidgetData = function(options) {
             const id = getState().widgets[i].id;
             console.error('couldnt set widget data cause of', err);
             dispatch(setWidgetData(id, {data: [], error: 'Oops, sth went wrong'}));
+            throw err;
           }
         });
       });
@@ -239,6 +246,12 @@ export const init = function(options) {
     .then(([profile, breakdown, brackets]) => {
       dispatch(prepareWidgets(options, profile, breakdown, brackets));
       return dispatch(fetchAllWidgetData(options));
+    })
+    .catch((err) => {
+      console.error('error while initing: ', err);
+      // need to set error as string 
+      // cause initial state object will be stringified to pass to client
+      dispatch(setError(err.toString()));
     });
   };
 };

@@ -23,7 +23,7 @@ var callAPI = function(url, data, method="POST") {
     if (response.status >= 200 && response.status < 300) 
       return response.json(); 
     else 
-      throw new Error('invalid call'); 
+      throw new Error('invalid call ' + url + ' with: ' + JSON.stringify(data)); 
   });
 };
 
