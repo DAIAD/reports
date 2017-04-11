@@ -22,21 +22,22 @@ In production mode, deployment has been optimized for speed. The HTTP method acc
 
 # Execution
 
-* `phantomjs saveToPDF.js URL API locale username password from to output`
+* `phantomjs saveToPDF.js URL API locale username password userKey from to output`
 
 | Parameter | Description |
 | --------- | ----------- |
 | URL       | The NODE server url |
 | API       | The API endpoint |
 | locale    | The locale for page rendering (one of en, el, es) |
-| username  | The username of the relevant user |
-| password  | The user's password |
+| username  | Username for api authentication|
+| password  | User password for api authentication |
+| userKey   | The user UUID key for which to create report |
 | from      | The beginning of the period date in ISO-8061 form (YYYYMMDD) |
 | to        | The end of the period date in ISO-8061 form (YYYYMMDD) |
 | output    | The output filename (the extension can be one of pdf, png) |
 
 #### Example usage  
-`phantomjs saveToPdf.js http://localhost:3000/ http://localhost:8888/api en user1@daiad.eu 12345678 20160101 20161231 out.pdf`
+`phantomjs saveToPdf.js http://localhost:3000/ http://localhost:8888/api en user1@daiad.eu 12345678 XXX-XX 20160101 20161231 out.pdf`
 
 # Known issues
 
