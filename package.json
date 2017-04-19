@@ -10,7 +10,7 @@
     "babel-preset-es2015": "^6.0.0",
     "babel-register": "^6.14.0",
     "body-parser": "^1.15.2",
-    "daiad-web-home": "git+https://github.com/DAIAD/web-client-home.git#export",
+    "daiad-home-web": "git+https://github.com/DAIAD/web-client-home.git#export",
     "echarts": "^3.0.0",
     "es6-promise": "~3.1.2",
     "express": "^4.14.0",
@@ -51,9 +51,9 @@
     "webpack-dev-server": "~1.14.1"
   },
   "config": {
-    "hotLoadHost": "192.168.10.113",
+    "hotLoadHost": "localhost",
     "hotLoadPort": 8089,
-    "nodeHost": "192.168.10.113",
+    "nodeHost": "localhost",
     "nodePort": 3000
   },
   "scripts": {
