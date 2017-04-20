@@ -8,6 +8,23 @@ import { components } from 'daiad-home-web';
 const { Widgets } = components;
 const { Widget } = Widgets;
 
+function WidgetItem (props) {
+  const { widget, intl } = props;
+  return (
+    <div key={widget.id} className={`widget ${widget.display}`}>
+      <h3 className="widget-title">
+        <FormattedMessage id={`widgets.titles.${widget.widgetId}`} />
+        <span className="widget-subtitle"><FormattedMessage id={`widgets.descriptions.${widget.widgetId}`} /></span>
+      </h3>
+      <hr />
+
+      <Widget 
+       {...widget} 
+       intl={intl}
+     />
+   </div>
+  );
+}
 
 function WidgetPanel (props) {
   const { widgets, intl } = props;
@@ -15,15 +32,10 @@ function WidgetPanel (props) {
     <div className='report-widgets'>
        {
          widgets.map(widget => (
-           <div key={widget.id} className={`widget ${widget.display}`}>
-             <h3><FormattedMessage id={`widgets.titles.${widget.widgetId}`} /></h3>
-             <h6><FormattedMessage id={`widgets.descriptions.${widget.widgetId}`} /></h6>
-             <hr />
-             <Widget 
-               {...widget} 
-               intl={intl}
-             />
-         </div>
+           <WidgetItem 
+             widget={widget} 
+             intl={intl} 
+           /> 
          ))
        }
      </div>

@@ -227,6 +227,17 @@ b {
   height: 320px;
 }
 
+.widget-title {
+  height: 37px;
+}
+
+.widget-subtitle {
+  font-size: 0.6em;
+  float: right;
+  width: 60%;
+}
+
 .widget hr {
   border: 1px lightgrey solid;
+  margin: 0;
 }
