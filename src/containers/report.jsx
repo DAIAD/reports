@@ -33,7 +33,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       from: moment(stateProps.date.from),
       to: moment(stateProps.date.to),
     },
-    widgets: stateProps.widgets.map(widget => prepareWidget(widget, stateProps.devices, ownProps.intl)),
+    widgets: stateProps.widgets.map(widget => prepareWidget({
+      ...widget, 
+      devices: stateProps.devices, 
+    },
+      ownProps.intl)),
   };
 };
 
