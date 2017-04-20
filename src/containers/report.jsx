@@ -29,10 +29,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchProps,
     ...ownProps,
     serial: meters.length > 0 ? meters[0].serial : '-',
-    date: {
-      from: moment(stateProps.date.from),
-      to: moment(stateProps.date.to),
-    },
     widgets: stateProps.widgets.map(widget => prepareWidget({
       ...widget, 
       devices: stateProps.devices, 

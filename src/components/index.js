@@ -15,8 +15,10 @@ function WidgetPanel (props) {
     <div className='report-widgets'>
        {
          widgets.map(widget => (
-           <div key={widget.id} className='widget'>
-             <h3>{widget.title}</h3>
+           <div key={widget.id} className={`widget ${widget.display}`}>
+             <h3><FormattedMessage id={`widgets.titles.${widget.widgetId}`} /></h3>
+             <h6><FormattedMessage id={`widgets.descriptions.${widget.widgetId}`} /></h6>
+             <hr />
              <Widget 
                {...widget} 
                intl={intl}
@@ -30,11 +32,8 @@ function WidgetPanel (props) {
 
 export default function ReportTemplate (props) {
   const { widgets, date, firstname, lastname, username, email, address, serial, devices, utility, logo, url, intl } = props;
-  const { from, to } = date;
- 
-  const fromDisplay = <b><FormattedMessage id={`weekdays.${from.day()}`}/>, <span>{from.date()}/{from.month()+1}/{from.year()}</span></b>;
-  const toDisplay = <b><FormattedMessage id={`weekdays.${to.day()}`}/>, <span>{to.date()}/{to.month()+1}/{to.year()}</span></b>;
-
+  
+  const period = <b><FormattedDate value={date.from} month="long" year="numeric" /></b>;
   return (
     <div className='report'>
       <div className='report-header'>
@@ -59,9 +58,9 @@ export default function ReportTemplate (props) {
           </div>
         </div>
         <div className='report-text'>
-          <span><FormattedMessage id='report.dear' values={{firstname}} /></span>
-          <p><FormattedMessage id='report.textP1' values={{from: fromDisplay, to:toDisplay}} /></p>
-          <p><FormattedMessage id='report.textP2' values={{utility}} /></p>
+          <span><FormattedMessage id='report.dear' values={{ firstname }} /></span>
+          <p><FormattedMessage id='report.textP1' values={{ period }} /></p>
+          <p><FormattedMessage id='report.textP2' values={{ utility }} /></p>
         </div>
       </div>
       <div className='report-body'>

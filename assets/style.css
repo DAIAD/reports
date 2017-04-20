@@ -211,63 +211,22 @@ b {
 }
 
 .widget {
-  display: inline-block;
-  width: 50%;
-}
-
-.infobox {
-  display: block;
-  float: left;
-  width: 40%; 
-  overflow: hidden;
-  font-size: 0.9em;
-  height: 150px;
-  margin: 10px 20px;
-  border: 1px #2D3580 solid;
-}
-.infobox-header {
-  display: block;
-  padding: 5px 10px 0px 10px;
-  overflow: auto;
-  border-bottom: 1px #2D3580 solid;
-}
-
-.infobox-body {
-  display: block;
-  overflow: auto;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-.infobox-body-left {
-  float: left; 
-  width: 50%;
-  height: 90px;
-  padding-left: 10px;
-}
-
-.infobox-body-right {
-  float: left;
   width: 40%;
-  height: 90px;
-  padding-left: 10px;
+  float: left;
+  border: 1px lightgrey solid;
+  padding: 10px;
+  overflow: hidden;
+  margin: 10px;
 }
 
-.infobox-body-full {
-  width: 90%;
-  height: 110px;
-  padding-left: 10px;
-  padding-right: 10px;
-
+.widget.stat {
+  height: 139px;
 }
 
-.infobox-body span {
-  //font-size: 1.02em;
-}
-.infobox-body p {
-  //margin: 0;
+.widget.chart {
+  height: 320px;
 }
 
-.infobox-error {
-  font-size: 1.1em;
+.widget hr {
+  border: 1px lightgrey solid;
 }
-
