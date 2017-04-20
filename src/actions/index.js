@@ -152,10 +152,10 @@ const fetchPriceBrackets = function (userKey) {
   };
 };
 
-const prepareWidgets = function(options, profile, breakdown, brackets) {
+const prepareWidgets = function(options, profile) {
   return function(dispatch, getState) {
     
-    const { userKey, credentials, from, to, api } = options;
+    const { userKey, credentials, from, to, api, breakdown, brackets } = options;
     if (!credentials || !from || !to || !userKey) 
       throw new Error('prepareWidgets: Insufficient data provided ' +
                       '(requires credentials, from, to, userKey)');
@@ -244,7 +244,7 @@ export const init = function(options) {
       dispatch(fetchPriceBrackets(userKey))
     ])
     .then(([profile, breakdown, brackets]) => {
-      dispatch(prepareWidgets(options, profile, breakdown, brackets));
+      dispatch(prepareWidgets({ ...options, breakdown, brackets }, profile));
       return dispatch(fetchAllWidgetData(options));
     })
     .catch((err) => {
