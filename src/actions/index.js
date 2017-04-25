@@ -148,7 +148,16 @@ const fetchWaterBreakdown = function (userKey) {
 
 const fetchPriceBrackets = function (userKey) {
   return function (dispatch, getState) {
-    return dispatch(QueryActions.fetchPriceBrackets(userKey));
+    return dispatch(QueryActions.fetchPriceBrackets(userKey))
+    .then(brackets => Array.isArray(brackets) ? 
+          brackets
+          .filter(b => b.maxVolume)
+          .map(b => ({
+            ...b,
+            maxVolume: b.maxVolume * 1000,
+            minVolume: b.minVolume * 1000,
+          }))
+          : []);
   };
 };
 
