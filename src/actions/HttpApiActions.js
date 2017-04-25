@@ -12,7 +12,10 @@ const queryData = function (options) {
     const api = getState().api;
 
     const data = {
-      query: options,
+      query: {
+        ...options,
+        usingPreAggregation: true,
+      },
       credentials,
       api,
     };
@@ -114,7 +117,10 @@ const queryMeterForecast = function (options) {
     const api = getState().api;
     
     const data = {
-      query: options, 
+      query: {
+        ...options, 
+        usingPreAggregation: true,
+      },
       credentials,
       api,
     };
