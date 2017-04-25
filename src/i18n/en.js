@@ -30,8 +30,8 @@ export default {
       "tip": "Tip"
     },
     "descriptions": {
-      "totalVolumeStatAmphiro": "The total consumption for your last 10 showers.",
-      "totalVolumeChartAmphiro": "The consumption for your last 10 showers for all installed devices.",
+      "totalVolumeStatAmphiro": "The total consumption for your last 100 showers.",
+      "totalVolumeChartAmphiro": "The consumption for your last 100 showers for all installed devices.",
       "totalVolumeStatSWM": "Your household's total water consumption for the last month.",
       "totalVolumeChartSWM": "Your household's water consumption progress in the last month.",
       "totalEnergyStat": "The total energy consumption for your last 10 showers.", 
@@ -44,10 +44,10 @@ export default {
       "breakdown": "Your computed water use per household appliance.", 
       "forecast": "Our estimations for your water use for the next month based on your use so far!",
       "pricing": "Your monthly consumption within the existing price ranges",
-      "comparison": "Your consumption in comparison to others, like your neighbors or your city average for the previous month.",
+      "comparison": "Your last month's consumption in comparison to your neighbors, city and similar households.",
       "budget": "Your consumption based on your daily budget.",
       "wateriqStat": "Your Water IQ score for the previous month.",
-      "wateriqChart": "Your Water IQ score for the previous month in comparison to your city, neighbors and similar users.",
+      "wateriqChart": "Your last month's water IQ score in comparison to your city, neighbors and similar households.",
       "commons": "Your consumption against your favorite community for the current month.",
       "tip": "A tip to help you reduce consumption"
     }
