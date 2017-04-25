@@ -22,7 +22,15 @@ const queryData = function (options) {
       if (!response || !response.success) {
         genUtils.throwServerError(response);  
       }
-      return response;
+      
+      // for cache
+      const meters = response.meters || [];
+      const devices = response.devices || [];
+      return {
+        ...response,
+        meters: meters.map(m => ({ ...m, source: 'METER' })),
+        devices: devices.map(d => ({ ...d, source: 'AMPHIRO' })),
+      };
     })
     .catch((error) => {
       console.error('caught error in data query: ', error);

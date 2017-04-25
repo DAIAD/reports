@@ -1,7 +1,10 @@
 import { actions } from 'daiad-home-web';
 import HttpApiActions from './HttpApiActions';
 
-const { QueryActions } = actions;
+const { CacheActions, QueryActions } = actions;
 const connectActionsToQueryBackend = QueryActions;
+const connectCacheActionsToQueryBackend = CacheActions;
 
-module.exports = connectActionsToQueryBackend(HttpApiActions);
+const cachePath = state => state.cache;
+
+module.exports = connectActionsToQueryBackend(connectCacheActionsToQueryBackend(HttpApiActions, cachePath));

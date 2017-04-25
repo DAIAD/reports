@@ -10,6 +10,7 @@ const initialState = {
   credentials: {},
   api: null,
   errors: [],
+  cache: {},
   user: {
     profile: {
       devices: [],
@@ -195,6 +196,37 @@ export default (state = initialState, action) => {
       };
       return {...state,
         widgets: newWidgets,
+      };
+    }
+
+    case 'QUERY_SET_CACHE': {
+      return {
+        ...state,
+        cache: action.cache,
+      };
+    }
+
+    case 'QUERY_SAVE_TO_CACHE': {
+      const newCache = { ...state.cache };
+      newCache[action.key] = {
+        data: action.data,
+        counter: 1,
+      };
+      return {
+        ...state,
+        cache: newCache,
+      };
+    }
+
+    case 'QUERY_CACHE_ITEM_REQUESTED': {
+      const newCache = { ...state.cache };
+      newCache[action.key] = { 
+        ...newCache[action.key], 
+        counter: newCache[action.key].counter + 1,
+      };
+      return {
+        ...state,
+        cache: newCache,
       };
     }
 

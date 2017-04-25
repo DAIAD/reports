@@ -186,14 +186,27 @@ const prepareWidgets = function(options, profile) {
         deviceKey,
         members,
         brackets,
-        breakdown,
+        breakdown, 
         userKey,
         renderAsImage: true,
       };
 
-      dispatch(setWidgetData(id, Object.assign({}, data)));
+      dispatch(setWidgetData(id, data));
     });
 
+  };
+};
+
+const fetchWidgetData = function(widget) {
+  return function (dispatch, getState) {
+    return dispatch(QueryActions.fetchWidgetData(widget))
+    .then((res) => {
+      dispatch(setWidgetData(widget.id, res));
+    })
+    .catch((error) => { 
+      console.error('Caught error in widget data fetch:', error); 
+      dispatch(setWidgetData(widget.id, { data: [], error: 'Oops sth went wrong, please contact us' })); 
+  }); 
   };
 };
 
@@ -202,27 +215,8 @@ const fetchAllWidgetData = function(options) {
     const { userKey, credentials, api, from, to } = options;
 
     return getState().widgets
-    .map(widget => QueryActions.fetchWidgetData(widget))
-    .reduce((prev, curr, i, arr) => {
-      return prev.then(() => {
-        return dispatch(curr)
-        .then(res => {
-          if (getState().widgets[i]) {
-            const id = getState().widgets[i].id;
-            dispatch(setWidgetData(id, res));
-          }
-        })
-        .catch(err => {
-          if (getState().widgets[i]) {
-            const id = getState().widgets[i].id;
-            console.error('couldnt set widget data cause of', err);
-            dispatch(setWidgetData(id, {data: [], error: 'Oops, sth went wrong'}));
-            throw err;
-          }
-        });
-      });
-    }, Promise.resolve());
-
+    .map(widget => fetchWidgetData(widget))
+    .reduce((prev, curr) => prev.then(() => dispatch(curr)), Promise.resolve());
   };
 };
 
