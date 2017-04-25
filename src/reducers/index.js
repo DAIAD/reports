@@ -127,14 +127,11 @@ const initialState = {
       data: [],
     },
     {
-      id: 'efficiencyEnergy',
-      widgetId: 'efficiencyEnergy',
-      type: 'efficiency',
+      id: 'tip',
+      widgetId: 'tip',
+      type: 'tip',
       display: 'stat',
-      period: 'ten',
-      deviceType: 'AMPHIRO',
-      metric: 'energy',
-      data: [],
+      deviceType: 'METER',
     },
   ]
 }

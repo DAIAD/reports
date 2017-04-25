@@ -1,12 +1,13 @@
 import moment from 'moment';
 
 import userAPI from '../api/user';
+import messageAPI from '../api/messages';
+
 import QueryActions from './QueryActions';
 import { utils } from 'daiad-home-web';
 const { general: genUtils } = utils;
 
 import { addLocaleData } from 'react-intl';
-
 import enLocaleData from 'react-intl/locale-data/en';
 import elLocaleData from 'react-intl/locale-data/el';
 import esLocaleData from 'react-intl/locale-data/es';
@@ -83,6 +84,24 @@ export const setError = function (error) {
 };
 
 // thunks
+
+const fetchAllTips = function(locale) {
+  return function(dispatch, getState) {
+    const credentials = getState().credentials;
+    const api = getState().api;
+    
+    return messageAPI.fetchTips({ api, credentials, locale })
+    .then((response) => {
+      if (!response || !response.success) {
+        genUtils.throwServerError(response);  
+      }
+      return response.messages;
+    })
+    .catch((error) => {
+      console.error('caught error in fetch all tips', error);
+    });
+  };
+};
 
 const fetchUserProfile = function(userKey) {
   return function(dispatch, getState) {
@@ -164,7 +183,7 @@ const fetchPriceBrackets = function (userKey) {
 const prepareWidgets = function(options, profile) {
   return function(dispatch, getState) {
     
-    const { userKey, credentials, from, to, api, breakdown, brackets } = options;
+    const { userKey, credentials, from, to, api, breakdown, brackets, tips } = options;
     if (!credentials || !from || !to || !userKey) 
       throw new Error('prepareWidgets: Insufficient data provided ' +
                       '(requires credentials, from, to, userKey)');
@@ -186,6 +205,8 @@ const prepareWidgets = function(options, profile) {
       const startDate = getState().date.from;
       const endDate = getState().date.to;
       
+      const randomTipIndex = tips && tips.length && Math.floor(Math.random() * (tips.length + 1));
+
       const data = {
         time: {
           startDate,
@@ -194,8 +215,10 @@ const prepareWidgets = function(options, profile) {
         },
         deviceKey,
         members,
-        brackets,
-        breakdown, 
+        brackets: type === 'pricing' ? brackets : null,
+        breakdown: type === 'breakdown' ? breakdown : null,
+        tips: type === 'tip' ? tips : null,
+        tipIndex: randomTipIndex,
         userKey,
         renderAsImage: true,
       };
@@ -244,10 +267,11 @@ export const init = function(options) {
     return Promise.all([
       dispatch(fetchUserProfile(userKey)),
       dispatch(fetchWaterBreakdown(userKey)),
-      dispatch(fetchPriceBrackets(userKey))
+      dispatch(fetchPriceBrackets(userKey)),
+      dispatch(fetchAllTips(locale))
     ])
-    .then(([profile, breakdown, brackets]) => {
-      dispatch(prepareWidgets({ ...options, breakdown, brackets }, profile));
+    .then(([profile, breakdown, brackets, tips]) => {
+      dispatch(prepareWidgets({ ...options, breakdown, brackets, tips }, profile));
       return dispatch(fetchAllWidgetData(options));
     })
     .catch((err) => {
