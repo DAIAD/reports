@@ -36,7 +36,7 @@ else {
   page.paperSize = {
     format: 'A4',
     orientation: 'portrait',
-    margin: '0cm',
+    margin: '0.2cm',
     footer: {
       height: '1cm',
       contents: phantom.callback(function(pageNum, numPages) {

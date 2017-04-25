@@ -14,14 +14,16 @@ function WidgetItem (props) {
     <div key={widget.id} className={`widget ${widget.display}`}>
       <h3 className="widget-title">
         <FormattedMessage id={`widgets.titles.${widget.widgetId}`} />
-        <span className="widget-subtitle"><FormattedMessage id={`widgets.descriptions.${widget.widgetId}`} /></span>
       </h3>
-      <hr />
-
-      <Widget 
-       {...widget} 
-       intl={intl}
-     />
+      { 
+        widget.error ? 
+        <h5>{ widget.error }</h5>
+        :
+        <Widget 
+         {...widget} 
+         intl={intl}
+       />
+     }
    </div>
   );
 }
@@ -31,8 +33,10 @@ function WidgetPanel (props) {
   return (
     <div className='report-widgets'>
        {
-         widgets.map(widget => (
+         widgets
+         .map(widget => (
            <WidgetItem 
+             key={widget.id}
              widget={widget} 
              intl={intl} 
            /> 

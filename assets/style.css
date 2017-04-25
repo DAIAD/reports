@@ -211,33 +211,31 @@ b {
 }
 
 .widget {
-  width: 40%;
+  width: 48%;
+  margin-bottom: 10px;
+  margin-right: 1%;
+  padding: 0;
   float: left;
   border: 1px lightgrey solid;
-  padding: 10px;
   overflow: hidden;
-  margin: 10px;
 }
 
 .widget.stat {
-  height: 139px;
+  height: 110px;
 }
 
 .widget.chart {
-  height: 320px;
+  height: 232px;
 }
 
 .widget-title {
-  height: 37px;
+  margin: 0;
+  padding: 5px 0 0 5px;
+  border-bottom: 1px lightgrey solid;
 }
 
 .widget-subtitle {
   font-size: 0.6em;
   float: right;
   width: 60%;
-}
-
-.widget hr {
-  border: 1px lightgrey solid;
-  margin: 0;
 }
