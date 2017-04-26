@@ -8,6 +8,7 @@ import { utils } from 'daiad-home-web';
 const { general: genUtils } = utils;
 
 import { addLocaleData } from 'react-intl';
+
 import enLocaleData from 'react-intl/locale-data/en';
 import elLocaleData from 'react-intl/locale-data/el';
 import esLocaleData from 'react-intl/locale-data/es';
@@ -17,6 +18,12 @@ addLocaleData(enLocaleData);
 addLocaleData(elLocaleData);
 addLocaleData(esLocaleData);
 addLocaleData(deLocaleData);
+
+import 'intl';
+import 'intl/locale-data/jsonp/en.js';
+import 'intl/locale-data/jsonp/el.js';
+import 'intl/locale-data/jsonp/es.js';
+import 'intl/locale-data/jsonp/de.js';
 
 import enHome from 'daiad-home-web/i18n/en.json';
 import elHome from 'daiad-home-web/i18n/el.json';

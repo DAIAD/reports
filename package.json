@@ -14,7 +14,7 @@
     "echarts": "^3.0.0",
     "es6-promise": "~3.1.2",
     "express": "^4.14.0",
-    "intl": "1.2.4",
+    "intl": "1.2.5",
     "isomorphic-fetch": "2.2.1",
     "jsx-loader": "~0.13.2",
     "keymirror": "^0.1.1",
