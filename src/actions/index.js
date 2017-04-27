@@ -219,7 +219,7 @@ const prepareWidgets = function(options, profile) {
     
     dispatch(setWidgets(widgets));
 
-    return getState().widgets.map(widget => {
+    return widgets.map(widget => {
       const { type, deviceType, period, id } = widget;
       
       if (!id || !type || !deviceType) 
