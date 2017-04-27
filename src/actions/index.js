@@ -225,18 +225,34 @@ const prepareWidgets = function(options, profile) {
       if (!id || !type || !deviceType) 
         throw new Error('prepareWidgets: Insufficient data provided ' +
                         'in widget (requires at least id, type, deviceType)');
+      const fromDate = getState().date.from;
+      const toDate = getState().date.to;
+      const month = {
+        startDate: fromDate,
+        endDate: toDate,
+        granularity: 2
+      };
 
-      const startDate = getState().date.from;
-      const endDate = getState().date.to;
-      
-      const randomTipIndex = tips && tips.length && Math.floor(Math.random() * (tips.length + 1));
+      // calculate time of year with/without next month for forecasting
+      const timeBeforeNextMonth = {
+        startDate: moment(fromDate).month() === 11 ? 
+          moment(fromDate).add(1, year).startOf('year').valueOf() 
+          : moment(fromDate).startOf('year').valueOf(),
+        endDate: moment(fromDate).month() === 11 ? 
+          moment(toDate).endOf('month').valueOf() 
+          : moment(toDate).endOf('month').valueOf(),
+        granularity: 4,
+      };
+      const timeWithNextMonth = {
+        ...timeBeforeNextMonth,
+        endDate: moment(timeBeforeNextMonth.endDate)
+        .startOf('week').add(1, 'month').endOf('month').valueOf(),
+      };
 
+      const randomTipIndex = tips && tips.length && Math.floor(Math.random() * (tips.length + 1)) || 0;
       const data = {
-        time: {
-          startDate,
-          endDate,
-          granularity: 2
-        },
+        time: type === 'forecast' ? timeBeforeNextMonth : month,
+        forecastTime: type === 'forecast' ? timeWithNextMonth : null, 
         deviceKey: widget.deviceKey ? [widget.deviceKey] : deviceKeys,
         deviceName: widget.deviceKey ? devUtils.getDeviceNameByKey(profile.devices, widget.deviceKey) : null, 
         members,
