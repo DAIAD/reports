@@ -109,7 +109,12 @@ const fetchAllTips = function(locale) {
       if (!response || !response.success) {
         genUtils.throwServerError(response);  
       }
-      return response.messages;
+      return response.messages
+      // filter out tips without images
+      .filter(m => m.imageEncoded)
+      // and tips with long descriptions
+      .filter(m => m.description && m.description.length < 135);
+
     })
     .catch((error) => {
       console.error('caught error in fetch all tips', error);
@@ -237,8 +242,7 @@ const prepareWidgets = function(options, profile) {
         members,
         brackets: type === 'pricing' ? brackets : null,
         breakdown: type === 'breakdown' ? breakdown : null,
-        tips: type === 'tip' ? tips : null,
-        tipIndex: randomTipIndex,
+        tip: type === 'tip' ? tips && tips[randomTipIndex] : null,
         userKey,
         renderAsImage: true,
       };
