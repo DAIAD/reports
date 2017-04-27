@@ -36,12 +36,12 @@ else {
   page.paperSize = {
     format: 'A4',
     orientation: 'portrait',
-    margin: '0.2cm',
+    margin: '2.5cm',
     footer: {
-      height: '1cm',
+      height: '1.25cm',
       contents: phantom.callback(function(pageNum, numPages) {
         if (numPages > 1) {
-          return "<div style='font-size:0.8em'><span style='float:right'>" + pageNum + "/" + numPages + "</span></div>";
+          return "<div style='font-size:0.8em'><span style='color:#666; float:right'>" + pageNum + "/" + numPages + "</span></div>";
         }
         else {
           return "";
