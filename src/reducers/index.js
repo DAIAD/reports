@@ -196,6 +196,12 @@ export default (state = initialState, action) => {
       };
     }
 
+    case 'SET_WIDGETS':
+      return {
+        ...state,
+        widgets: action.widgets,
+      };
+
     case 'QUERY_SET_CACHE': {
       return {
         ...state,

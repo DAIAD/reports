@@ -5,7 +5,7 @@ import messageAPI from '../api/messages';
 
 import QueryActions from './QueryActions';
 import { utils } from 'daiad-home-web';
-const { general: genUtils } = utils;
+const { general: genUtils, device: devUtils } = utils;
 
 import { addLocaleData } from 'react-intl';
 
@@ -72,6 +72,13 @@ const setWidgetData = function(id, data) {
     type: 'SET_WIDGET_DATA',
     id,
     data
+  };
+};
+
+const setWidgets = function(widgets) {
+  return {
+    type: 'SET_WIDGETS',
+    widgets,
   };
 };
 
@@ -195,12 +202,17 @@ const prepareWidgets = function(options, profile) {
       throw new Error('prepareWidgets: Insufficient data provided ' +
                       '(requires credentials, from, to, userKey)');
  
-    const deviceKey = Array.isArray(profile.devices) && 
+    const deviceKeys = Array.isArray(profile.devices) && 
       profile.devices
       .filter(dev => dev.type === 'AMPHIRO')
       .map(dev => dev.deviceKey);
 
     const members = profile.household && profile.household.members;
+
+    // expand amphiro chart widgets to as many amphiro devices there are
+    const widgets = getState().widgets.reduce((p, c) => c.type === 'total' && c.deviceType === 'AMPHIRO' && c.display === 'chart' ? [...p, ...deviceKeys.map((deviceKey, i) => ({ ...c, deviceKey, id: `${c.id}${i}` }))] : [...p, c], []);
+    
+    dispatch(setWidgets(widgets));
 
     return getState().widgets.map(widget => {
       const { type, deviceType, period, id } = widget;
@@ -220,7 +232,8 @@ const prepareWidgets = function(options, profile) {
           endDate,
           granularity: 2
         },
-        deviceKey,
+        deviceKey: widget.deviceKey ? [widget.deviceKey] : deviceKeys,
+        deviceName: widget.deviceKey ? devUtils.getDeviceNameByKey(profile.devices, widget.deviceKey) : null, 
         members,
         brackets: type === 'pricing' ? brackets : null,
         breakdown: type === 'breakdown' ? breakdown : null,
