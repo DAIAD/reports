@@ -236,7 +236,7 @@ const prepareWidgets = function(options, profile) {
       // calculate time of year with/without next month for forecasting
       const timeBeforeNextMonth = {
         startDate: moment(fromDate).month() === 11 ? 
-          moment(fromDate).add(1, year).startOf('year').valueOf() 
+          moment(fromDate).add(1, 'year').startOf('year').valueOf() 
           : moment(fromDate).startOf('year').valueOf(),
         endDate: moment(fromDate).month() === 11 ? 
           moment(toDate).endOf('month').valueOf() 
