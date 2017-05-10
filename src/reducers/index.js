@@ -83,13 +83,6 @@ const initialState = {
       deviceType: 'METER',
     },
     {
-      id: 'wateriq',
-      type: 'wateriq',
-      widgetId: 'wateriqChart',
-      display: 'chart',
-      deviceType: 'METER',
-    },
-    {
       id: 'ranking',
       widgetId: 'ranking',
       type: 'ranking',
@@ -112,6 +105,13 @@ const initialState = {
       type: 'breakdown',
       deviceType: 'METER',
       display: 'chart',
+    },
+    {
+      id: 'wateriq',
+      type: 'wateriq',
+      widgetId: 'wateriqChart',
+      display: 'chart',
+      deviceType: 'METER',
     },
   ]
 }
