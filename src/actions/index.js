@@ -249,7 +249,7 @@ const prepareWidgets = function(options, profile) {
         .startOf('week').add(1, 'month').endOf('month').valueOf(),
       };
 
-      const randomTipIndex = tips && tips.length && Math.floor(Math.random() * (tips.length + 1)) || 0;
+      const randomTipIndex = tips && tips.length && Math.floor(Math.random() * tips.length) || 0;
       const data = {
         time: type === 'forecast' ? timeBeforeNextMonth : month,
         forecastTime: type === 'forecast' ? timeWithNextMonth : null, 
