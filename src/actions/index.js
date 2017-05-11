@@ -212,10 +212,16 @@ const prepareWidgets = function(options, profile) {
       .filter(dev => dev.type === 'AMPHIRO')
       .map(dev => dev.deviceKey);
 
+    const hasMeters = devUtils.getMeterCount(profile.devices) > 0;
+    const hasAmphiros = devUtils.getDeviceCount(profile.devices) > 0;
+
     const members = profile.household && profile.household.members;
 
     // expand amphiro chart widgets to as many amphiro devices there are
-    const widgets = getState().widgets.reduce((p, c) => c.type === 'total' && c.deviceType === 'AMPHIRO' && c.display === 'chart' ? [...p, ...deviceKeys.map((deviceKey, i) => ({ ...c, deviceKey, id: `${c.id}${i}` }))] : [...p, c], []);
+    const widgets = getState().widgets
+    .filter(w => hasMeters ? true : w.deviceType !== 'METER')
+    .filter(w => hasAmphiros ? true : w.deviceType !== 'AMPHIRO')
+    .reduce((p, c) => c.type === 'total' && c.deviceType === 'AMPHIRO' && c.display === 'chart' ? [...p, ...deviceKeys.map((deviceKey, i) => ({ ...c, deviceKey, id: `${c.id}${i}` }))] : [...p, c], []);
     
     dispatch(setWidgets(widgets));
 
