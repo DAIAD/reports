@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps)  => ({
   ...state.user.profile,
   utility: state.user.profile.utility.name || 'DAIAD',
   logo: state.user.profile.utility.logo || 'logo.png',
-  url: state.user.profile.utility.url || 'www.daiad.eu',
+  url: state.user.profile.utility.url || 'https://app.dev.daiad.eu/home/',
   date: state.date,
   widgets: state.widgets, 
 })
