@@ -45,10 +45,10 @@ export default {
       "breakdown": "Your computed water use per household appliance.", 
       "forecast": "Our estimations for your water use for the next month.",
       "pricing": "Your monthly consumption within the existing price ranges",
-      "comparison": "Some useful comparisons based on your water consumption.",
+      "comparison": "Comparisons based on your water consumption.",
       "budget": "Your consumption based on your daily budget.",
       "wateriqStat": "Your Water IQ score for the previous month.",
-      "wateriqChart": "Some useful comparisons based on your water IQ score.",
+      "wateriqChart": "Comparisons based on your water IQ score.",
       "commons": "Your consumption against your favorite community.",
       "tip": "A tip to help you reduce consumption"
     }
