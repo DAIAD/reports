@@ -199,102 +199,93 @@ const fetchPriceBrackets = function (userKey) {
   };
 };
 
-const prepareWidgets = function(options, profile) {
-  return function(dispatch, getState) {
+const prepareWidgets = function(options, widgets) {
+  const { userKey, credentials, from, to, api, profile, breakdown, brackets, tips } = options;
+  if (!credentials || !from || !to || !userKey) 
+    throw new Error('prepareWidgets: Insufficient data provided ' +
+                    '(requires credentials, from, to, userKey)');
+
+  const deviceKeys = Array.isArray(profile.devices) && 
+    profile.devices
+    .filter(dev => dev.type === 'AMPHIRO')
+    .map(dev => dev.deviceKey);
+
+  const hasMeters = devUtils.getMeterCount(profile.devices) > 0;
+  const hasAmphiros = devUtils.getDeviceCount(profile.devices) > 0;
+
+  const members = profile.household && profile.household.members;
+
+  // expand amphiro chart widgets to as many amphiro devices there are
+  return widgets
+  .filter(w => hasMeters ? true : w.deviceType !== 'METER')
+  .filter(w => hasAmphiros ? true : w.deviceType !== 'AMPHIRO')
+  .reduce((p, c) => c.type === 'total' && c.deviceType === 'AMPHIRO' && c.display === 'chart' ? [...p, ...deviceKeys.map((deviceKey, i) => ({ ...c, deviceKey, id: `${c.id}${i}` }))] : [...p, c], [])
+  .map(widget => {
+    const { type, deviceType, period, id } = widget;
     
-    const { userKey, credentials, from, to, api, breakdown, brackets, tips } = options;
-    if (!credentials || !from || !to || !userKey) 
+    if (!id || !type || !deviceType) 
       throw new Error('prepareWidgets: Insufficient data provided ' +
-                      '(requires credentials, from, to, userKey)');
- 
-    const deviceKeys = Array.isArray(profile.devices) && 
-      profile.devices
-      .filter(dev => dev.type === 'AMPHIRO')
-      .map(dev => dev.deviceKey);
+                      'in widget (requires at least id, type, deviceType)');
+    const month = {
+      startDate: from,
+      endDate: to,
+      granularity: 2
+    };
 
-    const hasMeters = devUtils.getMeterCount(profile.devices) > 0;
-    const hasAmphiros = devUtils.getDeviceCount(profile.devices) > 0;
+    const trimester = {
+      startDate: timeUtils.getTrimester(from).startDate,
+      endDate: to,
+      granularity: 2,
+    };
 
-    const members = profile.household && profile.household.members;
+    // calculate time of year with/without next month for forecasting
+    const timeBeforeNextMonth = {
+      startDate: moment(from).month() === 11 ? 
+        moment(from).add(1, 'year').startOf('year').valueOf() 
+        : moment(from).startOf('year').valueOf(),
+      endDate: moment(from).month() === 11 ? 
+        moment(to).endOf('month').valueOf() 
+        : moment(to).endOf('month').valueOf(),
+      granularity: 4,
+    };
+    const timeWithNextMonth = {
+      ...timeBeforeNextMonth,
+      endDate: moment(timeBeforeNextMonth.endDate)
+      .startOf('week').add(1, 'month').endOf('month').valueOf(),
+    };
 
-    // expand amphiro chart widgets to as many amphiro devices there are
-    const widgets = getState().widgets
-    .filter(w => hasMeters ? true : w.deviceType !== 'METER')
-    .filter(w => hasAmphiros ? true : w.deviceType !== 'AMPHIRO')
-    .reduce((p, c) => c.type === 'total' && c.deviceType === 'AMPHIRO' && c.display === 'chart' ? [...p, ...deviceKeys.map((deviceKey, i) => ({ ...c, deviceKey, id: `${c.id}${i}` }))] : [...p, c], []);
-    
-    dispatch(setWidgets(widgets));
+    const randomTipIndex = tips && tips.length && Math.floor(Math.random() * tips.length) || 0;
+    const data = {
+      ...widget,
+      time: month,
+      deviceKey: widget.deviceKey ? [widget.deviceKey] : deviceKeys,
+      deviceName: widget.deviceKey ? devUtils.getDeviceNameByKey(profile.devices, widget.deviceKey) : null, 
+      members,
+      userKey,
+      renderAsImage: true,
+    };
 
-    return widgets.map(widget => {
-      const { type, deviceType, period, id } = widget;
-      
-      if (!id || !type || !deviceType) 
-        throw new Error('prepareWidgets: Insufficient data provided ' +
-                        'in widget (requires at least id, type, deviceType)');
-      const fromDate = getState().date.from;
-      const toDate = getState().date.to;
-      const month = {
-        startDate: fromDate,
-        endDate: toDate,
-        granularity: 2
+    if (type === 'forecast') {
+      return { ...data,
+        time: timeBeforeNextMonth,
+        forecastTime: timeWithNextMonth,
       };
-
-      const trimester = {
-        startDate: timeUtils.getTrimester(fromDate).startDate,
-        endDate: toDate,
-        granularity: 2,
+    } else if (type === 'pricing') {
+      return { ...data,
+        time: trimester,
+        brackets,
       };
-
-      // calculate time of year with/without next month for forecasting
-      const timeBeforeNextMonth = {
-        startDate: moment(fromDate).month() === 11 ? 
-          moment(fromDate).add(1, 'year').startOf('year').valueOf() 
-          : moment(fromDate).startOf('year').valueOf(),
-        endDate: moment(fromDate).month() === 11 ? 
-          moment(toDate).endOf('month').valueOf() 
-          : moment(toDate).endOf('month').valueOf(),
-        granularity: 4,
+    } else if (type === 'breakdown') {
+      return { ...data,
+        breakdown,
       };
-      const timeWithNextMonth = {
-        ...timeBeforeNextMonth,
-        endDate: moment(timeBeforeNextMonth.endDate)
-        .startOf('week').add(1, 'month').endOf('month').valueOf(),
+    } else if (type === 'tip') {
+      return { ...data,
+        tip: tips && tips[randomTipIndex],
       };
-
-      const randomTipIndex = tips && tips.length && Math.floor(Math.random() * tips.length) || 0;
-      const data = {
-        time: month,
-        deviceKey: widget.deviceKey ? [widget.deviceKey] : deviceKeys,
-        deviceName: widget.deviceKey ? devUtils.getDeviceNameByKey(profile.devices, widget.deviceKey) : null, 
-        members,
-        userKey,
-        renderAsImage: true,
-      };
-
-      if (type === 'forecast') {
-        dispatch(setWidgetData(id, { ...data,
-          time: timeBeforeNextMonth,
-          forecastTime: timeWithNextMonth,
-        }));
-      } else if (type === 'pricing') {
-        dispatch(setWidgetData(id, { ...data,
-          time: trimester,
-          brackets,
-        }));
-      } else if (type === 'breakdown') {
-        dispatch(setWidgetData(id, { ...data,
-          breakdown,
-        }));
-      } else if (type === 'tip') {
-        dispatch(setWidgetData(id, { ...data,
-          tip: tips && tips[randomTipIndex],
-        }));
-      } else { 
-        dispatch(setWidgetData(id, data));
-      }
-    });
-
-  };
+    } 
+    return data;
+  });
 };
 
 const fetchWidgetData = function(widget) {
@@ -310,11 +301,9 @@ const fetchWidgetData = function(widget) {
   };
 };
 
-const fetchAllWidgetData = function(options) {
+const fetchAllWidgetData = function(widgets) {
   return function(dispatch, getState) {
-    const { userKey, credentials, api, from, to } = options;
-
-    return getState().widgets
+    return widgets
     .map(widget => fetchWidgetData(widget))
     .reduce((prev, curr) => prev.then(() => dispatch(curr)), Promise.resolve());
   };
@@ -322,15 +311,15 @@ const fetchAllWidgetData = function(options) {
 
 export const init = function(options) {
   return function(dispatch, getState) {
-    const { api, from, to, locale, userKey, credentials } = options;
+    const { api, locale, userKey, credentials } = options;
 
-    const fromTimestamp = moment(from, 'YYYYMMDD').startOf('day').valueOf();
-    const toTimestamp = moment(to, 'YYYYMMDD').endOf('day').valueOf();
+    const from = moment(options.from, 'YYYYMMDD').startOf('day').valueOf();
+    const to = moment(options.to, 'YYYYMMDD').endOf('day').valueOf();
 
     dispatch(changeLocale(locale));
     dispatch(setCredentials(credentials));
     dispatch(setApiURL(api));
-    dispatch(setDateRange(fromTimestamp, toTimestamp));
+    dispatch(setDateRange(from, to));
 
     return Promise.all([
       dispatch(fetchUserProfile(userKey)),
@@ -339,8 +328,10 @@ export const init = function(options) {
       dispatch(fetchAllTips(locale))
     ])
     .then(([profile, breakdown, brackets, tips]) => {
-      dispatch(prepareWidgets({ ...options, breakdown, brackets, tips }, profile));
-      return dispatch(fetchAllWidgetData(options));
+      const widgets = prepareWidgets({ ...options, from, to, profile, breakdown, brackets, tips }, getState().widgets);
+
+      dispatch(setWidgets(widgets));
+      return dispatch(fetchAllWidgetData(widgets));
     })
     .catch((err) => {
       console.error('error while initing: ', err);
