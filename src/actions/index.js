@@ -5,7 +5,7 @@ import messageAPI from '../api/messages';
 
 import QueryActions from './QueryActions';
 import { utils } from 'daiad-home-web';
-const { general: genUtils, device: devUtils } = utils;
+const { general: genUtils, device: devUtils, time: timeUtils } = utils;
 
 import { addLocaleData } from 'react-intl';
 
@@ -239,6 +239,12 @@ const prepareWidgets = function(options, profile) {
         granularity: 2
       };
 
+      const trimester = {
+        startDate: timeUtils.getTrimester(fromDate).startDate,
+        endDate: toDate,
+        granularity: 2,
+      };
+
       // calculate time of year with/without next month for forecasting
       const timeBeforeNextMonth = {
         startDate: moment(fromDate).month() === 11 ? 
@@ -257,19 +263,35 @@ const prepareWidgets = function(options, profile) {
 
       const randomTipIndex = tips && tips.length && Math.floor(Math.random() * tips.length) || 0;
       const data = {
-        time: type === 'forecast' ? timeBeforeNextMonth : month,
-        forecastTime: type === 'forecast' ? timeWithNextMonth : null, 
+        time: month,
         deviceKey: widget.deviceKey ? [widget.deviceKey] : deviceKeys,
         deviceName: widget.deviceKey ? devUtils.getDeviceNameByKey(profile.devices, widget.deviceKey) : null, 
         members,
-        brackets: type === 'pricing' ? brackets : null,
-        breakdown: type === 'breakdown' ? breakdown : null,
-        tip: type === 'tip' ? tips && tips[randomTipIndex] : null,
         userKey,
         renderAsImage: true,
       };
 
-      dispatch(setWidgetData(id, data));
+      if (type === 'forecast') {
+        dispatch(setWidgetData(id, { ...data,
+          time: timeBeforeNextMonth,
+          forecastTime: timeWithNextMonth,
+        }));
+      } else if (type === 'pricing') {
+        dispatch(setWidgetData(id, { ...data,
+          time: trimester,
+          brackets,
+        }));
+      } else if (type === 'breakdown') {
+        dispatch(setWidgetData(id, { ...data,
+          breakdown,
+        }));
+      } else if (type === 'tip') {
+        dispatch(setWidgetData(id, { ...data,
+          tip: tips && tips[randomTipIndex],
+        }));
+      } else { 
+        dispatch(setWidgetData(id, data));
+      }
     });
 
   };

@@ -22,7 +22,7 @@ export default {
       "ranking": "Shower ranking",
       "breakdown": "Water breakdown",
       "forecast": "Forecast - next month",
-      "pricing": "Pricing - this month",
+      "pricing": "Pricing - this trimester",
       "comparison": "Comparison",
       "budget": "Monthly budget",
       "wateriqStat": "Water IQ",
