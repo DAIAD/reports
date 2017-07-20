@@ -25,7 +25,7 @@
     "react": "~15.0.0",
     "react-addons-pure-render-mixin": "~15.0.1",
     "react-dom": "~15.0.1",
-    "react-echarts": "git+https://github.com/smanousopoulos/react-echarts.git#master",
+    "react-echarts": "git+https://github.com/DAIAD/react-echarts.git#master",
     "react-intl": "2.1.3",
     "react-redux": "~4.4.4",
     "redux": "~3.4.0",
