@@ -36,14 +36,17 @@ else {
   var SCRIPT = `<script src="${PUBLIC_PATH}/bundle.js"></script>`;
 }
 
+//pass top-level error to client to be caught by phantomjs
+function handleError (error, req, res, next) {
+  console.error(error);
 
-app.use('/assets', Express.static('assets'));
-app.use(bodyParser.json());
+  const store = createStore(myApp, applyMiddleware(thunkMiddleware));
+  store.dispatch(setError(error.toString()));
+  const initialState = store.getState();
+  res.status(200).send(renderFullPage('', initialState));
+}
 
-app.use(handleRequest);
-//app.post('/', handleRequest);
-
-function handleRequest (req, res) {
+function handleRequest (req, res, next) {
   //Accept both GET (development only) and POST requests
   if (req.method === 'GET' && NODE_ENV === 'development') {
     var { locale='en', username, password, userKey, from, to, api } = req.query;
@@ -52,69 +55,56 @@ function handleRequest (req, res) {
     var { locale='en', username, password, from, to, api, userKey } = req.body;
   }
 
-  const store = createStore(myApp, applyMiddleware(thunkMiddleware));
-
   // validate input
-
   try {
     validateInput({ locale, username, password, userKey, from, to, api });
   }
   catch(err) {
-    const validationError = 'input validation error: ' + err;
-    store.dispatch(setError(validationError));
-    console.error('input validation error', validationError);
-
-    const initialState = store.getState();
-
-    res.status(200).send(renderFullPage('', initialState));
+    next(new Error(`input validation error: ${err}`));
   }
 
   // initialize data
+  const store = createStore(myApp, applyMiddleware(thunkMiddleware));
   
   store.dispatch(init({ locale, from, to, api, userKey, credentials: {username, password} }))
   .then(() => {
+    // render
     const html = renderToString(
       <Provider store={store}>
         <App />
       </Provider>
     );
     const initialState = store.getState();
-
     res.status(200).send(renderFullPage(html, initialState));
-    })
-    .catch((err) => {
-      console.error('Oops, sth went wrong: ', err);
-      store.dispatch(setError(err.toString()));
-  
-      const initialState = store.getState();
-
-      res.status(200).send(renderFullPage('', initialState));
-    });  
+  })
+  .catch((err) => {
+    next(err);
+  });  
 }
 
 function validateInput(options) {
   const { locale, username, password, userKey, from, to, api } = options;
 
   if (!locale || !username || !password || !from || !to || !api || !userKey) {
-    throw 'not all required parameters provided, need locale, username, password, userKey, from, to, api';
+    throw new Error('not all required parameters provided, need locale, username, password, userKey, from, to, api');
   }
   if (!validator.isIn(locale, ['en', 'el', 'es'])) {
-    throw 'locale must be one of en, el, es';
+    throw new Error('locale must be one of en, el, es');
   }
   if (!validator.isISO8601(from)) {
-    throw 'from date must be a valid ISO-8601 date (YYYYMMDD)';
+    throw new Error('from date must be a valid ISO-8601 date (YYYYMMDD)');
   }
   if (!validator.isISO8601(to)) {
-    throw 'to date must be a valid ISO-8601 date (YYYYMMDD)';
+    throw new Error('to date must be a valid ISO-8601 date (YYYYMMDD)');
   }
   if (moment(to, 'YYYYMMDD') - moment(from, 'YYYYMMDD') < 0) {
-    throw 'to date must be after from date';
+    throw new Error('to date must be after from date');
   } 
   if (!validator.isURL(api, {protocols: ['http', 'https'], require_protocol: true})) {
-    throw 'api must be a valid http or https url (including protocol)';
+    throw new Error('api must be a valid http or https url (including protocol)');
   }
   if (!validator.isUUID(userKey)) {
-    throw 'user key must be valid UUID';
+    throw new Error('user key must be valid UUID');
   }
 }
 
@@ -137,6 +127,12 @@ function renderFullPage(html, initialState) {
   </html>
   ` 
 }
+
+app.use('/assets', Express.static('assets'));
+app.use(bodyParser.json());
+
+app.use(handleRequest);
+app.use(handleError);
 
 app.listen(PORT, HOST, function() {
   console.log(`Node listening on port: ${PORT} in ${NODE_ENV} mode`);

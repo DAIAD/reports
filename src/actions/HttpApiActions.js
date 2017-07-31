@@ -186,7 +186,7 @@ const fetchWaterBreakdown = function (userKey) {
     }) 
     .catch((errors) => {
       console.error('Error caught on fetch water breakdown:', errors);
-      return errors;
+      throw errors;
     });
   };
 };
@@ -211,7 +211,7 @@ const fetchPriceBrackets = function (userKey) {
     }) 
     .catch((errors) => {
       console.error('Error caught on get price brackets:', errors);
-      return errors;
+      throw errors;
     });
   };
 };

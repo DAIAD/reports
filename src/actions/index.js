@@ -295,8 +295,8 @@ const fetchWidgetData = function(widget) {
       dispatch(setWidgetData(widget.id, res));
     })
     .catch((error) => { 
-      console.error('Caught error in widget data fetch:', error); 
       dispatch(setWidgetData(widget.id, { data: [], error: 'Oops sth went wrong, please contact us' })); 
+      dispatch(setError(error.toString()));
   }); 
   };
 };
@@ -333,11 +333,9 @@ export const init = function(options) {
       dispatch(setWidgets(widgets));
       return dispatch(fetchAllWidgetData(widgets));
     })
-    .catch((err) => {
-      console.error('error while initing: ', err);
-      // need to set error as string 
-      // cause initial state object will be stringified to pass to client
-      dispatch(setError(err.toString()));
+    .catch((error) => {
+      dispatch(setError(error.toString()));
+      throw error;
     });
   };
 };

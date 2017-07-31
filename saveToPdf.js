@@ -75,14 +75,15 @@ else {
       console.error('Unable to execute POST request');
       phantom.exit();
     } 
-    if (errors.length > 0) {
-      console.log('\nFound ' + errors.length + ' error(s)');
-    } 
-
+    
     window.setTimeout(function() {
       page.render(output);
-      console.log('\nRendered PDF successfully!');
+      if (errors.length === 0) {
+        console.log('\nRendered PDF successfully!');
+      } else {
+        console.error('\nRender Failure. Found ' + errors.length + ' error(s)');
+      }
       phantom.exit();
-    }, 1000);
+    }, 300);
   });
 }
