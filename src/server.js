@@ -24,17 +24,18 @@ const HOTLOADPORT = process.env.HOT_LOAD_PORT;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 
+// for react-echarts
 if (NODE_ENV === 'development') {
-  var SCRIPT = `<script src="http://${HOTLOADHOST}:${HOTLOADPORT}${PUBLIC_PATH}/bundle.js"></script>`;
-  // for react-echarts
   console.debug = function(/* ...args */) {
     var vargs = Array.prototype.slice.call(arguments);
     console.log.apply(this, vargs);
   };
 }
-else {
-  var SCRIPT = `<script src="${PUBLIC_PATH}/bundle.js"></script>`;
-}
+
+const SCRIPT = NODE_ENV === 'development' ? 
+  `<script src="http://${HOTLOADHOST}:${HOTLOADPORT}${PUBLIC_PATH}/bundle.js"></script>` 
+  : 
+    `<script src="${PUBLIC_PATH}/bundle.js"></script>`;
 
 //pass top-level error to client to be caught by phantomjs
 function handleError (error, req, res, next) {
@@ -47,13 +48,12 @@ function handleError (error, req, res, next) {
 }
 
 function handleRequest (req, res, next) {
-  //Accept both GET (development only) and POST requests
-  if (req.method === 'GET' && NODE_ENV === 'development') {
-    var { locale='en', username, password, userKey, from, to, api } = req.query;
-  }
-  else if (req.method === 'POST') {
-    var { locale='en', username, password, from, to, api, userKey } = req.body;
-  }
+  //Accept GET (development only) and POST requests
+  const { locale='en', username, password, userKey, from, to, api } = 
+    req.method === 'GET' && NODE_ENV === 'development' ?
+      req.query
+        :
+          req.body;
 
   // validate input
   try {
